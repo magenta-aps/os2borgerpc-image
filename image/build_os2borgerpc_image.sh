@@ -80,7 +80,7 @@ fi
 build/extract_iso.sh "$ISO_PATH" iso
 
 # Unsquash and customize
-sudo unsquashfs -force iso/casper/filesystem.squashfs > /dev/null
+sudo unsquashfs -force iso/casper/minimal.squashfs > /dev/null
 
 # Mounting in our own tmp into the chroot so we retain access to the log files written from within it
 # This will fail in the pipeline due to a permissions error, but it will work locally
@@ -108,8 +108,8 @@ sed --in-place '/casper/d' iso/casper/filesystem.manifest-desktop
 # First delete the image building files from squashfs again
 sudo rm --recursive --force $BUILD_FILES_COPY_DESTINATION/* squashfs-root/*.sh
 
-rm iso/casper/filesystem.squashfs
-sudo mksquashfs squashfs-root iso/casper/filesystem.squashfs
+rm iso/casper/minimal.squashfs
+sudo mksquashfs squashfs-root iso/casper/minimal.squashfs
 
 # Calculate FS size
 printf $(sudo du --summarize --one-file-system --block-size=1 squashfs-root | cut --fields 1) > iso/casper/filesystem.size
@@ -129,7 +129,7 @@ fi
 
 # Recalculate MD5 sums.
 cd iso
-md5sum casper/filesystem.squashfs > md5sum.txt
+md5sum casper/minimal.squashfs > md5sum.txt
 cd ..
 
 # Cleanup and unmount our tmp from squashfs-root

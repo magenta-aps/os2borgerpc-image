@@ -60,4 +60,4 @@ apt-get install --assume-yes $(check-language-support -l $LN) $(check-language-s
 # shellcheck disable=SC2046 # We want word-splitting here
 apt-mark manual $(check-language-support -l $LN --show-installed) $(check-language-support -l en --show-installed)
 
-pip3 install os2borgerpc-client
+pip3 install --break-system-packages os2borgerpc-client

@@ -10,8 +10,8 @@ stages:
   - build
 
 variables:
-  UBUNTU_RELEASE: "22.04"
-  SOURCE_ISO: "ubuntu-22.04.4-desktop-amd64.iso"
+  UBUNTU_RELEASE: "24.04"
+  SOURCE_ISO: "ubuntu-24.04-desktop-amd64.iso"
   # NOTE: The purpose of this is to have something to uniquely identify the output ISO name by under "artifacts", as it has no access to the DESTINATION_ISO variable
   DESTINATION_ISO_MATCH: "bpc"
   ARCHITECTURE: "x64"
