@@ -53,8 +53,8 @@ groupadd nopasswdlogin
 "$DIR/install_dependencies.sh"
 
 # Setup default user
-useradd user --create-home --password 12345 --shell /bin/bash --user-group \
-  --groups nopasswdlogin --comment Borger
+#useradd user --create-home --password 12345 --shell /bin/bash --user-group \
+#  --groups nopasswdlogin --comment Borger
 
 # Make now first boot
 touch /etc/os2borgerpc/firstboot

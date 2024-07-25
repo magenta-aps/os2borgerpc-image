@@ -1,0 +1,18 @@
+#cloud-config
+autoinstall:
+  version: 1
+  interactive-sections:
+    - storage
+  identity:
+    hostname: os2borgerpc
+    username: superuser
+    password: '$6$/c6Zcifihma/P9NL$MJfwhzrFAcQ0Wq992Wc8XvQ.4mb0aPHK7sUyvRMyicghNmfe7zbvwb5j2AI5AEZq3OfVQRQDbGfzgjrxSfKbp1'
+    realname: Superuser
+  locale: da_DK.UTF-8
+  keyboard:
+    layout: dk
+    variant: ""
+    toggle: null
+  timezone: Europe/Copenhagen
+
+  shutdown: reboot

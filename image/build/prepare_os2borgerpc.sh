@@ -45,7 +45,8 @@ SETUP_LOG="os2borgerpc_setup_log.txt"
 
 # If any "No such file or directory" popped up (e.g. a script has been renamed/moved): Exit with an error
 # Ignore this variant of the line, though:
-sed --in-place "/Cannot set LC_ALL to default locale: No such file or directory/d" $SETUP_LOG
+sed --in-place --expression "/Cannot set LC_ALL to default locale: No such file or directory/d" \
+    --expression "\@E: Can not write log (Is /dev/pts mounted?) - posix_openpt (2: No such file or directory)@d" $SETUP_LOG
 if grep --no-ignore-case "No such file or directory" $SETUP_LOG; then
   echo "A 'No such file or directory' (case sensitive!) error was encountered (see above for the full line) \
        either a script is missing or has a wrong name, or a script is expecting a file to be there which wasn't. \
