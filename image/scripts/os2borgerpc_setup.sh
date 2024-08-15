@@ -17,7 +17,7 @@
 # user, add scripts, whatever. Once you're done customizing, please call the
 # *finalize* script to launch the setup script on first boot.
 
-echo "RUNNING SCRIPT $0 (INSIDE SQUASHFS)"
+printf "\n%s\n" "===== RUNNING: $0 (INSIDE SQUASHFS) ====="
 
 DIR=$(dirname "${BASH_SOURCE[0]}")
 
@@ -97,7 +97,7 @@ echo "Running scripts from the scripts repo"
 
 # Cloning script repository
 apt-get install --assume-yes git
-git clone --depth 1 https://github.com/OS2borgerPC/os2borgerpc-scripts.git
+git clone --depth 1 "$SCRIPTS_CLONE_URL"
 
 # Cloned script directory
 SCRIPT_DIR="/os2borgerpc-scripts"
