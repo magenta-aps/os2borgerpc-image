@@ -5,6 +5,9 @@ set -x
 printf "\n\n%s\n\n" "===== RUNNING: $0 (INSIDE SQUASHFS) ====="
 
 export LANG_ALL="$1"
+export SCRIPTS_CLONE_URL="$2"
+
+[ -z "$SCRIPTS_CLONE_URL" ] && echo "No SCRIPTS_CLONE_URL set. Exiting." && exit 1
 
 # You have entered the squashed system as root.
 export DEBIAN_FRONTEND=noninteractive

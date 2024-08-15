@@ -26,23 +26,27 @@ if [ "$1" == "--lang-all" ] || [ "$2" == "--lang-all" ] || [ "$3" == "--lang-all
   LANG_ALL=true
   echo "Arguments: Setting up better support for all languages"
   COUNT=$((COUNT+1))
+else
+  LANG_ALL=false
 fi
 # Remove the optional arguments if there were any, so we only have the required ones left
 shift $COUNT
 
 ISO_PATH=$1
 IMAGE_NAME=$2
+SCRIPTS_CLONE_URL=$3
 
 
-if [[ -z $ISO_PATH || -z $IMAGE_NAME ]]
+if [[ -z $ISO_PATH || -z $IMAGE_NAME || -z $SCRIPTS_CLONE_URL ]]
 then
-    echo "Usage: "$0"  [--clean] [--skip-build-deps] [--lang-all] iso_file image_name"
+    echo "Usage: "$0"  [--clean] [--skip-build-deps] [--lang-all] iso_file image_name scripts_clone_url"
     echo ""
     echo "--clean: First delete temp build files, e.g. from within iso/"
     echo "--skip-build-deps: Skip installing build dependencies. Useful if testing on a non-debian-system, ie. without apt"
     echo "--lang-all: Build an image with more multi-language-support out of the box"
     echo "iso_file must be a valid path to the ISO file to be remastered"
     echo "image_name is the name of the output image"
+    echo "scripts_clone_url is the URL to the repo where scripts are cloned from"
     echo ""
     exit 1
 fi
@@ -87,7 +91,7 @@ sudo rsync --recursive --exclude squashfs-root --exclude image/*.iso --exclude .
 
 figlet "About to enter chroot"
 
-build/chroot_os2borgerpc.sh squashfs-root ./build/prepare_os2borgerpc.sh "$LANG_ALL"
+build/chroot_os2borgerpc.sh squashfs-root ./build/prepare_os2borgerpc.sh "$LANG_ALL" "$SCRIPTS_CLONE_URL"
 
 
 # Regenerate manifest
