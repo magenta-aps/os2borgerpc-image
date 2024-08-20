@@ -1,8 +1,16 @@
+default:
+  @just --list
+
+alias bsd := build_os2borgerpc_image_skip_build_deps
+
 _umount-old-image MOUNTPOINT:
   sudo umount {{MOUNTPOINT}}
 
 build_os2borgerpc_image SOURCE_ISO OUTPUT_ISO:
-  cd image && ./build_os2borgerpc_image.sh {{SOURCE_ISO}} {{OUTPUT_ISO}}
+  cd image && ./build_os2borgerpc_image.sh {{SOURCE_ISO}} {{OUTPUT_ISO}} https://github.com/magenta-aps/os2borgerpc-scripts.git
+
+build_os2borgerpc_image_skip_build_deps SOURCE_ISO OUTPUT_ISO:
+  cd image && ./build_os2borgerpc_image.sh --skip-build-deps {{SOURCE_ISO}} {{OUTPUT_ISO}} https://github.com/magenta-aps/os2borgerpc-scripts.git
 
 # Unpacks and mounts most images older than 4.0.0
 mount-old-image IMG MOUNTPOINT:
