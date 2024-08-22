@@ -12,8 +12,9 @@ ResultAny=no
 ResultInactive=no
 ResultActive=no
 
+# TODO: Verify that this is working! gdm is the username of gdm, at least. gdm's scripts (like PreSession) run as root, though, so not sure if gdm itself runs as gdm or root.
 [NetworkManager3]
-Identity=unix-user:lightdm
+Identity=unix-user:gdm
 Action=org.freedesktop.NetworkManager.*
 ResultAny=no
 ResultInactive=no

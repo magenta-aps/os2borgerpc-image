@@ -12,7 +12,7 @@ DIR=$(dirname "${BASH_SOURCE[0]}")
 # required by OS2borgerPC.
 DEPENDENCIES=( $(cat "$DIR/DEPENDENCIES") )
 
-if [ "$LANG_ALL" ]; then
+if [ "$LANG_ALL" = "true" ]; then
     # Add support for specific languages besides those preinstalled
   LN="sv"
   DEPENDENCIES+=(language-pack-"$LN")

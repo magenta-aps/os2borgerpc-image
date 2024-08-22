@@ -2,11 +2,11 @@
 
 set -e
 
-# Switch to normal lightdm timeout
-sed --in-place "s/autologin-user-timeout=30/autologin-user-timeout=10/" /etc/lightdm/lightdm.conf
-
 # Install dbus-x11 for dbus-launch from .deb file
 dpkg -i /etc/os2borgerpc/*.deb
+
+# Secure GRUB as GRUB should now be fully installed, unlike at the time the image is being created
+/usr/share/os2borgerpc/bin/grub_set_password.py "$(pwgen -N 1 -s 12)"
 
 # Detect the locale chosen under the installation and rename "Borger" if not Danish
 # Locale file may or may not contain " around the value of LANG
@@ -73,7 +73,7 @@ systemctl disable "$(basename $UNATTENDED_UPGRADES_DELAY_SERVICE)"
 
 # delete the related files
 rm --force $UNATTENDED_UPGRADES_DELAY $UNATTENDED_UPGRADES_DELAY_SERVICE $START_UNATTENDED_UPGRADES \
-            /etc/os2borgerpc/apt_periodic_control.sh
+           /etc/os2borgerpc/apt_periodic_control.sh
 EOF
 
 chmod 700 $START_UNATTENDED_UPGRADES
@@ -92,8 +92,9 @@ EOF
 
 systemctl enable --now "$(basename $UNATTENDED_UPGRADES_DELAY_SERVICE)"
 
-# We remove kdeconnect here, because it's not installed during install_dependencies.sh(?!) so we can't remove it there
-apt-get remove --assume-yes --purge kdeconnect
+# We remove the following programs here, because they're not installed during install_dependencies.sh(?!) so we can't remove them there
+apt-get remove --assume-yes --purge deja-dup kdeconnect remmina transmission-gtk
 
-# Remove the firstboot-related files
-rm  /etc/lightdm/greeter-setup-scripts/firstboot.sh /etc/os2borgerpc/*.deb
+# Finally: Remove firstboot and its files
+sed --in-place "/firstboot.sh/d" /etc/gdm3/Init/Default
+rm "$0" /etc/os2borgerpc/*.deb /usr/share/os2borgerpc/bin/grub_set_password.py

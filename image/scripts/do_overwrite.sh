@@ -16,9 +16,8 @@ chmod 0700 "/usr/share/os2borgerpc/bin/user-cleanup.bash"
 chmod u+x "/usr/share/os2borgerpc/bin/gio-fix-desktop-file-permissions.sh"
 chmod +x "/usr/share/os2borgerpc/bin/gio-dbus.sh"
 
-# Set correct permissions on files related to greeter-setup-scripts
-#chmod 0700 "/etc/lightdm/greeter_setup_script.sh"
-#chmod 0700 --recursive "/etc/lightdm/greeter-setup-scripts"
+# Set the correct, default permissions on files related to the login manager
+chmod 755 /etc/gdm3/PostSession/Default
 
 # Update dconf with settings from overwrites.
 dconf update

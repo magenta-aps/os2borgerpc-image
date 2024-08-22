@@ -37,8 +37,7 @@ IMAGE_NAME=$2
 SCRIPTS_CLONE_URL=$3
 
 
-if [[ -z $ISO_PATH || -z $IMAGE_NAME || -z $SCRIPTS_CLONE_URL ]]
-then
+if [[ -z $ISO_PATH || -z $IMAGE_NAME || -z $SCRIPTS_CLONE_URL ]]; then
     echo "Usage: "$0"  [--clean] [--skip-build-deps] [--lang-all] iso_file image_name scripts_clone_url"
     echo ""
     echo "--clean: First delete temp build files, e.g. from within iso/"
@@ -68,7 +67,6 @@ if [ "$CLEAN_BUILD" ]
 then
     # In case it was cancelled prematurely and /tmp is still bind-mounted to squashfs-root/tmp
     unmount_cleanup
-    sudo chattr -f -i squashfs-root/var/lib/lightdm/.cache/unity-greeter/state || true
     sudo rm --recursive --force iso/.disk/ iso/* squashfs squashfs-root/ /tmp/build_installed_packages_list.txt /tmp/scripts_installed_packages_list.txt /tmp/os2borgerpc_install_log.txt /tmp/os2borgerpc_upgrade_log.txt boot_hybrid.img ubuntu22-desktop-amd64.efi
 fi
 
@@ -99,8 +97,7 @@ build/chroot_os2borgerpc.sh squashfs-root build/create_manifest.sh > iso/casper/
 figlet "Exiting chroot"
 
 cp iso/casper/filesystem.manifest iso/casper/filesystem.manifest-desktop
-sed --in-place '/ubiquity/d' iso/casper/filesystem.manifest-desktop
-sed --in-place '/casper/d' iso/casper/filesystem.manifest-desktop
+sed --in-place --expression '/ubiquity/d' --expression '/casper/d' iso/casper/filesystem.manifest-desktop
 
 
 # Build squashfs for the ISO
@@ -117,13 +114,12 @@ printf $(sudo du --summarize --one-file-system --block-size=1 squashfs-root | cu
 # Overwrite preseed etc.
 cp --recursive iso_overwrites/* iso/
 # Make a few changes to the copied preseed file if we're building an image with multi-language-support
-if [ "$LANG_ALL" ]
-then
-  # Don't preseed locale/timezone
-  sed --in-place --expression "/keyboard-configuration/d" --expression "\@debian-installer/locale@d" --expression "\@d-i time/zone@d" iso/preseed/ubuntu.seed
+if [ "$LANG_ALL" = "true" ]; then
+  # TODO: An attempt at modifying subiquity to ask for lang/timezone and keyboard layout during multilang install. Testing is TODO!
+  sed --in-place --expression "/locale/d" --expression "\@timezone@d" --expression "\@keyboard:@d" --expression "\@layout:@d" --expression "\@variant:@d" --expression "\@toggle:@d" iso/nocloud/user-data
   # Don't use the OS2-specific background image
   rm iso/boot/grub/borgerpc_grub_bg.png
-  # TODO: Potentially remove in the future if converting to a true language agnostic image: Hardcode ISO bootup text to Swedish
+  # TODO: Potentially remove in the future if converting to a truly language agnostic image: Hardcode ISO bootup text to Swedish
   sed --in-place --expression "s/Install OS2borgerPC from this medium/Installera Sambruk MedborgarPC från detta medium/" iso/boot/grub/grub.cfg
 fi
 

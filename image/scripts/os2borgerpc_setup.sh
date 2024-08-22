@@ -46,6 +46,17 @@ useradd superuser --create-home --shell /bin/bash \
 # Overwrite file tree
 "$DIR/do_overwrite.sh"
 
+# Hide some irrelevant shortcuts for Borger
+# TODO: Add Firmware Updater which I can't seem to find the name of?! Maybe others.
+PTH="/home/.skjult/.local/share/applications"
+mkdir --parents $PTH
+# Note: Firmware Updater, Snap Store and App Center are snaps, so they don't have desktop files under /usr/share/applications/
+PROGRAMS="update-manager.desktop usb-creator-gtk.desktop software-properties-drivers.desktop software-properties-gtk.desktop software-properties-livepatch.desktop org.gnome.font-viewer.desktop org.gnome.SystemMonitor.desktop gnome-system-monitor-kde.desktop org.gnome.PowerStats.desktop org.gnome.DiskUtility.desktop nm-connection-editor.desktop org.gnome.seahorse.Application.desktop org.gnome.Logs.desktop org.gnome.baobab.desktop gnome-session-properties.desktop app-center.desktop snap-store.desktop firmware-updater-app.desktop firmware-updater.desktop"
+for program in $PROGRAMS; do
+  touch "$PTH/$program"
+  chmod a-rwx "$PTH/$program"
+done
+
 # Adding this group here as apt-periodic-control called by install_dependencies.sh expects it to exist
 groupadd nopasswdlogin
 
@@ -53,17 +64,30 @@ groupadd nopasswdlogin
 "$DIR/install_dependencies.sh"
 
 # Setup default user
-#useradd user --create-home --password 12345 --shell /bin/bash --user-group \
-#  --groups nopasswdlogin --comment Borger
-
-# Make now first boot
-touch /etc/os2borgerpc/firstboot
+useradd user --create-home --shell /bin/bash --user-group --groups nopasswdlogin --comment Borger
 
 # Ensure the correct, restrictive permissions on this client directory
 chmod 700 /var/lib/os2borgerpc
 
 # Prepare for security scripts
 mkdir --parents /etc/os2borgerpc/security/
+
+# Enable autologin to superuser during the install.
+# Just the default config with comments removed and autologin enabled, as otherwise the installer itself starts on the login screen
+# It's then overwritten via a late command, at the end of the installation
+cat << EOF > /etc/gdm3/custom.conf
+[daemon]
+AutomaticLoginEnable = true
+AutomaticLogin = superuser
+
+[security]
+
+[xdmcp]
+
+[chooser]
+
+[debug]
+EOF
 
 # Set product in configuration
 PRODUCT="os2borgerpc"
@@ -94,6 +118,9 @@ git clone --depth 1 "$SCRIPTS_CLONE_URL"
 # Cloned script directory
 SCRIPT_DIR="/os2borgerpc-scripts"
 
+# Move the script for securing grub to another location so firstboot can execute it, as somehow only grub-common and not grub2 (and thus not the update-grub command) is available in the image.
+cp "$SCRIPT_DIR/common/system/grub_set_password.py" /usr/share/os2borgerpc/bin/
+
 # Initially disable unattended upgrades to prevent problems with firstboot script
 "$SCRIPT_DIR/common/system/apt_periodic_control.sh" false
 
@@ -102,10 +129,6 @@ mv "$SCRIPT_DIR/common/system/apt_periodic_control.sh" "/etc/os2borgerpc/"
 
 # Randomize checkins with server.
 "$SCRIPT_DIR/common/system/randomize_jobmanager.sh" 5
-
-# Securing grub
-#"$SCRIPT_DIR/common/system/grub_set_password.py" "$(pwgen -N 1 -s 12)"
-
 # Block suspend, shut down and reboot and remove them from the menu
 #sed --in-place "/polkitd/d" "$SCRIPT_DIR/os2borgerpc/desktop/polkit_policy_shutdown_suspend.sh"
 "$SCRIPT_DIR/os2borgerpc/sikkerhed/polkit_policy_shutdown_suspend.sh" True True
@@ -136,7 +159,7 @@ sed --in-place "s/Prompt=.*/Prompt=never/" /etc/update-manager/release-upgrades
 
 # Set background images on login screen and desktop
 # Multi user image uses a different image because the Danish one has Danish text on it
-if [ "$LANG_ALL" ]; then
+if [ "$LANG_ALL" = "true" ]; then
   BG="/usr/share/backgrounds/os2bpc_default_login.png"
 else
   BG="/usr/share/backgrounds/os2bpc_default_desktop.svg"
