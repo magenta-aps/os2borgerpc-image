@@ -1,5 +1,4 @@
-Version 5.3.0, June 13, 2024
-----------------------------
+## Version 5.3.0, June 13, 2024
 
 New in this version:
 
@@ -8,8 +7,7 @@ New in this version:
 - Build in scripts that block Gnome Remote Desktop and user access to terminal.
 - Make the ISOs built by the pipeline more human readable.
 
-Version 5.2.0, December 20, 2023
---------------------------------
+## Version 5.2.0, December 20, 2023
 
 New in this version:
 
@@ -24,8 +22,7 @@ New in this version:
 - Remove unused X-tcp-server
 - Use consistent naming for the superuser shortcuts
 
-Version 5.1.0, May 25, 2023
----------------------------
+## Version 5.1.0, May 25, 2023
 
 New in this version:
 
@@ -33,8 +30,7 @@ New in this version:
   In future versions they'll be released simultaneously, with the same
   version numbers.
 
-Version 5.0.0, March 9, 2023
-----------------------------
+## Version 5.0.0, March 9, 2023
 
 New in this version:
 
@@ -50,23 +46,20 @@ New in this version:
   future versions.
 - Add flag to the build process where dependency installation is skipped.
 
-Version 4.0.0, July 15, 2022
-----------------------------
+## Version 4.0.0, July 15, 2022
 
 New in this version:
 
 - Rewrite build process completely for better automation and easier testing.
 
-Version 3.1.1, February 1, 2022
--------------------------------
+## Version 3.1.1, February 1, 2022
 
 New in this version:
 
 - Remove explicit locale settings from ISO.
 - Remove "noisy" lines from auth.log.
 
-Version 3.1.0, November 25, 2021
---------------------------------
+## Version 3.1.0, November 25, 2021
 
 New in this version:
 
@@ -81,8 +74,7 @@ New in this version:
   become unresponsive.
 - More stable process for automatic upgrades.
 
-Version 3.0.0, January 18, 2021
--------------------------------
+## Version 3.0.0, January 18, 2021
 
 New in this version:
 
@@ -91,42 +83,36 @@ New in this version:
 - Versioning scheme changed to semantic versioning, cf.
   https://semver.org/.
 
-Version 2.4.1.3, July 17, 2018
-------------------------------
+## Version 2.4.1.3, July 17, 2018
 
 New in this version:
 - Changed git repo url to the new repo url.
 
-Version 2.4.1.2, January 2, 2018
---------------------------------
+## Version 2.4.1.2, January 2, 2018
 
 - Installation now adds the security folder and necessary security files.
 
-Version 2.4.1.1, June 6, 2017
------------------------------
+## Version 2.4.1.1, June 6, 2017
 
 - bibos_installtion.sh was using deleted testing branch as base for installation. This is now removed.
 
-Version 2.4.1, June 6, 2017
----------------------------
+## Version 2.4.1, June 6, 2017
 
 New in this version:
 
 - The OS2BorgerPC "Publikum" user is now called "Borger".
 - The name bibos has been changed to OS2BorgerPC, every where it could be found.
 - Ubuntu settings is now completely locked for user "Borger".
-- Bluetooth applet is removed from top bar for user "Borger". 
+- Bluetooth applet is removed from top bar for user "Borger".
 
-Version 2.4.0, February 23, 2017
---------------------------------
+## Version 2.4.0, February 23, 2017
 
 New in this version:
 
 - The bibos installation now supports Ubuntu 16.04.
 - The 'Publikum' user now only has Desktop folder present in nautilus panel.
 
-Version 2.3.0, March 22, 2016
------------------------------
+## Version 2.3.0, March 22, 2016
 
 New in this version:
 
@@ -138,8 +124,7 @@ New in this version:
   for the bibos client to run.
 - Removed gimp icon from Desktop as we do not install gimp.
 
-Version 2.2.0, May 29, 2015
----------------------------
+## Version 2.2.0, May 29, 2015
 
 New in this version:
 
@@ -149,8 +134,7 @@ New in this version:
 - Include print job removal patch on image.
 - Include latest bibos_client by default.
 
-Version 2.1.0.1, October 25, 2013
----------------------------------
+## Version 2.1.0.1, October 25, 2013
 
 New in this version:
 
@@ -175,8 +159,7 @@ New in this version:
   admin_scripts/ in this repository.
 - New boot image on install disk.
 
-Version 2.0.2.2, August 16, 2013
---------------------------------
+## Version 2.0.2.2, August 16, 2013
 
 New in this version:
 
@@ -194,8 +177,7 @@ New in this version:
 - Fix Firefox settings so it won't check for add-on compatibility
 - Updated documentation
 
-Version 2.0.2.1, July 25, 2013
-------------------------------
+## Version 2.0.2.1, July 25, 2013
 
 New in this version:
 
@@ -208,8 +190,7 @@ New in this version:
 - Prompt the user before rebooting so there is time to remove the installation
   image, cf. ticket #8496
 
-Version 2.0.2, July 12, 2013
-----------------------------
+## Version 2.0.2, July 12, 2013
 
 New in this version:
 
