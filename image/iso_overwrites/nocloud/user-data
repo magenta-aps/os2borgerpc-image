@@ -26,7 +26,7 @@ autoinstall:
     search_drivers: false
   shutdown: reboot
   late-commands:
-    - /usr/share/os2borgerpc/post-install/post-install.sh
+    - curtin in-target -- /usr/share/os2borgerpc/post-install/post-install.sh
   # TODO: Create Borger here, or create it earlier, during the build in our scripts?
   #users:
   #  - name: borger

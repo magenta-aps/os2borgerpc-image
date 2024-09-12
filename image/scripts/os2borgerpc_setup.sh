@@ -64,7 +64,8 @@ groupadd nopasswdlogin
 "$DIR/install_dependencies.sh"
 
 # Setup default user
-useradd user --create-home --shell /bin/bash --user-group --groups nopasswdlogin --comment Borger
+useradd user --create-home --password 12345 --shell /bin/bash --user-group --groups nopasswdlogin --comment Borger
+passwd --delete user
 
 # Ensure the correct, restrictive permissions on this client directory
 chmod 700 /var/lib/os2borgerpc
