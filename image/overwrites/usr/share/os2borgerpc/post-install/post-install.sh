@@ -14,11 +14,6 @@ echo "Base dir: $DIR" > $POST_INSTALL_LOG
 # Create our default post session config for gdm, which runs user-cleanup
 cp "$DIR/files/Default" /etc/gdm3/PostSession/Default >> $POST_INSTALL_LOG
 
-# Restrict the ability to change network settings
-# 50-local.d isn't there by default: Create it
-mkdir --parents /etc/polkit-1/localauthority/50-local.d
-cp "$DIR/files/networkmanager.pkla" /etc/polkit-1/localauthority/50-local.d/ >> $POST_INSTALL_LOG
-
 # Install dbus-x11 for dbus-launch from .deb file
 dpkg -i /etc/os2borgerpc/*.deb
 
@@ -48,6 +43,10 @@ chown --recursive superuser:superuser "$DESKTOP"
 chmod --recursive u+x "$DESKTOP"
 
 rm --recursive $DESKTOP_FILES_DIR
+
+# Set up passwdless login of user
+GDM_PAM=/etc/pam.d/gdm-password
+sed -i "/user != root quiet_success/a auth    sufficient      pam_succeed_if.so user ingroup nopasswdlogin" $GDM_PAM
 
 # Setup delayed start of unattended upgrades
 TIME_TO_START=$(date -d 'now+2hours' +%FT%R)

@@ -65,7 +65,6 @@ groupadd nopasswdlogin
 
 # Setup default user
 useradd user --create-home --password 12345 --shell /bin/bash --user-group --groups nopasswdlogin --comment Borger
-passwd --delete user
 
 # Ensure the correct, restrictive permissions on this client directory
 chmod 700 /var/lib/os2borgerpc
@@ -130,6 +129,7 @@ mv "$SCRIPT_DIR/common/system/apt_periodic_control.sh" "/etc/os2borgerpc/"
 
 # Randomize checkins with server.
 "$SCRIPT_DIR/common/system/randomize_jobmanager.sh" 5
+
 # Block suspend, shut down and reboot and remove them from the menu
 #sed --in-place "/polkitd/d" "$SCRIPT_DIR/os2borgerpc/desktop/polkit_policy_shutdown_suspend.sh"
 "$SCRIPT_DIR/os2borgerpc/sikkerhed/polkit_policy_shutdown_suspend.sh" True True
