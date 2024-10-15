@@ -4,6 +4,9 @@
 
 USERNAME="user"
 
+# We need to set PATH to ensure that the script works correctly when run by gdm
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin
+
 # Determine the name of the user desktop directory. This is done via xdg-user-dir,
 # which checks the /home/user/.config/user-dirs.dirs file. To ensure this file exists,
 # we run xdg-user-dirs-update, which generates it based on the environment variables

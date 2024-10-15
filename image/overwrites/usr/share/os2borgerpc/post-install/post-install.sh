@@ -44,9 +44,10 @@ chmod --recursive u+x "$DESKTOP"
 
 rm --recursive $DESKTOP_FILES_DIR
 
-# Set up passwdless login of user
-GDM_PAM=/etc/pam.d/gdm-password
-sed -i "/user != root quiet_success/a auth    sufficient      pam_succeed_if.so user ingroup nopasswdlogin" $GDM_PAM
+# Set up passwdless login of user and greeter script execution
+PAM_COMMON=/etc/pam.d/common-auth
+sed -i "/success=2/i auth optional pam_exec.so /usr/share/os2borgerpc/bin/greeter_setup_script.sh \
+\nauth sufficient pam_succeed_if.so user ingroup nopasswdlogin" $PAM_COMMON
 
 # Setup delayed start of unattended upgrades
 TIME_TO_START=$(date -d 'now+2hours' +%FT%R)
