@@ -129,3 +129,6 @@ Include=user,superuser
 
 [debug]
 EOF
+
+# Cleanup the files used for post-install
+rm /etc/os2borgerpc/*.deb /usr/share/os2borgerpc/bin/grub_set_password.py $DIR/files/Default

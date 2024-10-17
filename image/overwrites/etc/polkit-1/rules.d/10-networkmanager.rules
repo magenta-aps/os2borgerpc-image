@@ -1,0 +1,10 @@
+polkit.addRule(function(action, subject) {
+    var users = ["user", "gdm", "lightdm"]
+    var actions = ["org.freedesktop.NetworkManager.network-control", "org.freedesktop.NetworkManager.enable-disable-network", "org.freedesktop.NetworkManager.enable-disable-wifi"]
+
+    if (users.indexOf(subject.user) >= 0) {
+      for (var i = 0; i < actions.length; i++) {
+        if (action.id.includes(actions[i])) return polkit.Result.NO
+      }
+    }
+})
