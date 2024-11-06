@@ -2,4 +2,10 @@
 
 /usr/share/os2borgerpc/bin/user-cleanup.bash
 
+post_session_scripts=$(find /etc/os2borgerpc/post-session-scripts -mindepth 1)
+for file in $post_session_scripts
+do
+  ./"$file" &
+done
+
 exit 0

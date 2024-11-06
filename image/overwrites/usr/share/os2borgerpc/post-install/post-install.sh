@@ -44,10 +44,25 @@ chmod --recursive u+x "$DESKTOP"
 
 rm --recursive $DESKTOP_FILES_DIR
 
-# Set up passwdless login of user and greeter script execution
-PAM_COMMON=/etc/pam.d/common-auth
-sed -i "/success=2/i auth optional pam_exec.so /usr/share/os2borgerpc/bin/greeter_setup_script.sh \
-\nauth sufficient pam_succeed_if.so user ingroup nopasswdlogin" $PAM_COMMON
+# Setup passwdless login of user
+PAM_COMMON=/etc/pam.d/gdm-password
+sed -i "/include common-auth/i auth sufficient pam_succeed_if.so user ingroup nopasswdlogin" $PAM_COMMON
+
+# Setup service for running greeter setup on boot
+BOOT_GREETER_SETUP_SERVICE="/etc/systemd/system/boot_greeter_setup.service"
+cat << EOF > $BOOT_GREETER_SETUP_SERVICE
+[Unit]
+Description=OS2borgerPC boot greeter setup service
+
+[Service]
+Type=simple
+ExecStart=/usr/share/os2borgerpc/bin/greeter_setup_script.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl enable "$(basename $BOOT_GREETER_SETUP_SERVICE)"
 
 # Setup delayed start of unattended upgrades
 TIME_TO_START=$(date -d 'now+2hours' +%FT%R)
@@ -107,7 +122,7 @@ ExecStart=$UNATTENDED_UPGRADES_DELAY
 WantedBy=multi-user.target
 EOF
 
-systemctl enable --now "$(basename $UNATTENDED_UPGRADES_DELAY_SERVICE)"
+systemctl enable "$(basename $UNATTENDED_UPGRADES_DELAY_SERVICE)"
 
 # We remove the following programs here, because they're not installed during install_dependencies.sh(?!) so we can't remove them there
 apt-get remove --assume-yes --purge deja-dup kdeconnect remmina transmission-gtk
