@@ -60,4 +60,10 @@ apt-get install --assume-yes $(check-language-support -l $LN) $(check-language-s
 # shellcheck disable=SC2046 # We want word-splitting here
 apt-mark manual $(check-language-support -l $LN --show-installed) $(check-language-support -l en --show-installed)
 
+# Download the language support packages to a known folder because the Ubuntu 24.04 installer seems to get rid of
+# some of them even if they're marked as explicitly installed
+cd /etc/os2borgerpc
+apt download $(check-language-support -l $LN --show-installed) $(check-language-support -l en --show-installed) language-pack-$LN-base language-pack-en-base language-pack-gnome-$LN-base language-pack-gnome-en-base
+cd -
+
 pip3 install --break-system-packages os2borgerpc-client

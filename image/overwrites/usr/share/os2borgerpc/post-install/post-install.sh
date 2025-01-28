@@ -14,7 +14,7 @@ echo "Base dir: $DIR" > $POST_INSTALL_LOG
 # Create our default post session config for gdm, which runs user-cleanup
 cp "$DIR/files/Default" /etc/gdm3/PostSession/Default >> $POST_INSTALL_LOG
 
-# Install dbus-x11 for dbus-launch from .deb file
+# Install dbus-x11 for dbus-launch and language support packages from .deb files
 dpkg -i /etc/os2borgerpc/*.deb
 
 # Secure GRUB as GRUB should now be fully installed, unlike at the time the image is being created
@@ -34,8 +34,17 @@ fi
 USR="superuser"
 DESKTOP_FILES_DIR="/usr/share/os2borgerpc/superuser-desktop"
 
+# For some reason, Ubuntu 24 does not keep the language packages installed during image building
+# even though we mark them as manually installed. As a result, we install them from local .deb-files
+# earlier in this script. The lack of installed language packages during the actual installation also
+# results in the superuser directories initially being created with english names (the fallback).
+# To fix this, we need to delete the english directories and recreate them with the correct names
+# before we copy over superuser desktop shortcuts
+rm -rf /home/superuser/Desktop /home/superuser/Documents /home/superuser/Downloads /home/superuser/Music /home/superuser/Pictures /home/superuser/Public /home/superuser/Templates /home/superuser/Videos
 export "$(grep LANG= /etc/default/locale | tr --delete '"')"
-runuser -u $USR xdg-user-dirs-update
+# Recreate the superuser directories with the correct names
+# This function cannot delete the existing directories, which is why we need to do so beforehand
+runuser -u $USR -- xdg-user-dirs-update --force
 DESKTOP=$(runuser -u $USR xdg-user-dir DESKTOP)
 
 mv $DESKTOP_FILES_DIR/*.desktop "$DESKTOP/"
@@ -45,8 +54,8 @@ chmod --recursive u+x "$DESKTOP"
 rm --recursive $DESKTOP_FILES_DIR
 
 # Setup passwdless login of user
-PAM_COMMON=/etc/pam.d/gdm-password
-sed -i "/include common-auth/i auth sufficient pam_succeed_if.so user ingroup nopasswdlogin" $PAM_COMMON
+PAM_GDM=/etc/pam.d/gdm-password
+sed -i "/include common-auth/i auth sufficient pam_succeed_if.so user ingroup nopasswdlogin" $PAM_GDM
 
 # Setup service for running greeter setup on boot
 BOOT_GREETER_SETUP_SERVICE="/etc/systemd/system/boot_greeter_setup.service"
@@ -137,10 +146,6 @@ DisallowTCP=true
 [xdmcp]
 
 [chooser]
-
-# Without this, Borger isn't show because it defaults to being passwordless
-[greeter]
-Include=user,superuser
 
 [debug]
 EOF
