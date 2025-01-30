@@ -7,12 +7,9 @@ set -x
 # https://canonical-subiquity.readthedocs-hosted.com/en/latest/reference/autoinstall-reference.html#user-data
 
 DIR="$(dirname "$0")"
-POST_INSTALL_LOG=/home/superuser/post-install-log.txt
-
-echo "Base dir: $DIR" > $POST_INSTALL_LOG
 
 # Create our default post session config for gdm, which runs user-cleanup
-cp "$DIR/files/Default" /etc/gdm3/PostSession/Default >> $POST_INSTALL_LOG
+cp "$DIR/files/Default" /etc/gdm3/PostSession/Default
 
 # Install dbus-x11 for dbus-launch and language support packages from .deb files
 dpkg -i /etc/os2borgerpc/*.deb
@@ -29,29 +26,14 @@ elif [ "$LOCALE" = "en" ]; then
     usermod --comment 'Citizen' user
 fi
 
-# Copy over superuser desktop shortcuts - they're activated by a .config/autostart script
-
-USR="superuser"
-DESKTOP_FILES_DIR="/usr/share/os2borgerpc/superuser-desktop"
-
 # For some reason, Ubuntu 24 does not keep the language packages installed during image building
 # even though we mark them as manually installed. As a result, we install them from local .deb-files
 # earlier in this script. The lack of installed language packages during the actual installation also
 # results in the superuser directories initially being created with english names (the fallback).
-# To fix this, we need to delete the english directories and recreate them with the correct names
-# before we copy over superuser desktop shortcuts
-rm -rf /home/superuser/Desktop /home/superuser/Documents /home/superuser/Downloads /home/superuser/Music /home/superuser/Pictures /home/superuser/Public /home/superuser/Templates /home/superuser/Videos
-export "$(grep LANG= /etc/default/locale | tr --delete '"')"
-# Recreate the superuser directories with the correct names
-# This function cannot delete the existing directories, which is why we need to do so beforehand
-runuser -u $USR -- xdg-user-dirs-update --force
-DESKTOP=$(runuser -u $USR xdg-user-dir DESKTOP)
-
-mv $DESKTOP_FILES_DIR/*.desktop "$DESKTOP/"
-chown --recursive superuser:superuser "$DESKTOP"
-chmod --recursive u+x "$DESKTOP"
-
-rm --recursive $DESKTOP_FILES_DIR
+# These directories are removed here. The correct directories are created by a .config/autostart script
+# that also moves and activates the superuser shortcuts
+rm -rf /home/superuser/Desktop /home/superuser/Documents /home/superuser/Downloads /home/superuser/Music \
+  /home/superuser/Pictures /home/superuser/Public /home/superuser/Templates /home/superuser/Videos
 
 # Setup passwdless login of user
 PAM_GDM=/etc/pam.d/gdm-password

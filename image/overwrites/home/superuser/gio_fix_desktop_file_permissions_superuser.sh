@@ -2,7 +2,11 @@
 
 USR="superuser"
 
+xdg-user-dirs-update --force
+
 DESKTOP=$(xdg-user-dir DESKTOP)
+
+mv /home/superuser/*.desktop $DESKTOP
 
 for FILE in "$DESKTOP/"*.desktop; do
   echo "About to fix permissions for the desktop shortcut: $FILE"
