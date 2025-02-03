@@ -66,4 +66,10 @@ cd /etc/os2borgerpc
 apt download $(check-language-support -l $LN --show-installed) $(check-language-support -l en --show-installed) language-pack-$LN-base language-pack-en-base language-pack-gnome-$LN-base language-pack-gnome-en-base
 cd -
 
-pip3 install --break-system-packages os2borgerpc-client
+# Necessary pipx setup
+pipx ensurepath
+echo 'PIPX_BIN_DIR="/usr/local/bin"' >> /etc/environment
+
+# Even though we've added PIPX_BIN_DIR to /etc/environment, we still set it here
+# because changes to /etc/environment do not take effect until the session is reloaded
+PIPX_BIN_DIR="/usr/local/bin" pipx install os2borgerpc-client
