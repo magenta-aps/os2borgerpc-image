@@ -29,11 +29,15 @@ fi
 # For some reason, Ubuntu 24 does not keep the language packages installed during image building
 # even though we mark them as manually installed. As a result, we install them from local .deb-files
 # earlier in this script. The lack of installed language packages during the actual installation also
-# results in the superuser directories initially being created with english names (the fallback).
-# These directories are removed here. The correct directories are created by a .config/autostart script
-# that also moves and activates the superuser shortcuts
+# results in the user and superuser directories initially being created with english names (the fallback).
+# These directories are removed here. The correct superuser directories are created by a .config/autostart
+# script that also moves and activates the superuser shortcuts
+# The correct user directories are created on first login as user
+chattr -i /home/user/Desktop/ || true # Ensure that the user Desktop is mutable
 rm -rf /home/superuser/Desktop /home/superuser/Documents /home/superuser/Downloads /home/superuser/Music \
-  /home/superuser/Pictures /home/superuser/Public /home/superuser/Templates /home/superuser/Videos
+  /home/superuser/Pictures /home/superuser/Public /home/superuser/Templates /home/superuser/Videos \
+  /home/user/Desktop /home/user/Documents /home/user/Downloads /home/user/Music /home/user/Pictures \
+  /home/user/Public /home/user/Templates /home/user/Videos /home/user/.config/user-dirs.*
 
 # Setup passwdless login of user
 PAM_GDM=/etc/pam.d/gdm-password

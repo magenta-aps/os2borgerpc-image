@@ -51,7 +51,7 @@ useradd superuser --create-home --shell /bin/bash \
 PTH="/home/.skjult/.local/share/applications"
 mkdir --parents $PTH
 # Note: Firmware Updater, Snap Store and App Center are snaps, so they don't have desktop files under /usr/share/applications/
-PROGRAMS="update-manager.desktop usb-creator-gtk.desktop software-properties-drivers.desktop software-properties-gtk.desktop software-properties-livepatch.desktop org.gnome.font-viewer.desktop org.gnome.SystemMonitor.desktop gnome-system-monitor-kde.desktop org.gnome.PowerStats.desktop org.gnome.DiskUtility.desktop nm-connection-editor.desktop org.gnome.seahorse.Application.desktop org.gnome.Logs.desktop org.gnome.baobab.desktop gnome-session-properties.desktop app-center.desktop snap-store.desktop firmware-updater-app.desktop firmware-updater.desktop"
+PROGRAMS="update-manager.desktop usb-creator-gtk.desktop software-properties-drivers.desktop software-properties-gtk.desktop software-properties-livepatch.desktop org.gnome.font-viewer.desktop org.gnome.SystemMonitor.desktop gnome-system-monitor-kde.desktop org.gnome.PowerStats.desktop org.gnome.DiskUtility.desktop nm-connection-editor.desktop org.gnome.seahorse.Application.desktop org.gnome.Logs.desktop org.gnome.baobab.desktop gnome-session-properties.desktop gnome-language-selector.desktop app-center.desktop snap-store_snap-store.desktop firmware-updater_firmware-updater-app.desktop firmware-updater_firmware-updater.desktop"
 for program in $PROGRAMS; do
   touch "$PTH/$program"
   chmod a-rwx "$PTH/$program"

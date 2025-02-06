@@ -30,7 +30,7 @@ echo "Removing packages we don't need, before we upgrade all packages:"
 # libfprint-2-2 because it fails during installation/updating because of an unmet interactive step, but we don't need finger print reading anyway so we can delete it
 # apport and whoopsie because error reporting popping up is distracting on public pcs
 # ...and the rest because they likely aren't needed by users
-apt-get --assume-yes remove --purge apport evince libfprint-2-2 nautilus-extension-gnome-terminal nautilus-sendto openvpn whoopsie
+apt-get --assume-yes remove --purge apport evince libfprint-2-2 nautilus-extension-gnome-terminal nautilus-sendto openvpn whoopsie thunderbird
 
 if [ "$LANG_ALL" = "false" ]; then
     # Danish image version: Remove unneeded language support, as the installer seems to otherwise spend a decent amount of time removing them during the installation
