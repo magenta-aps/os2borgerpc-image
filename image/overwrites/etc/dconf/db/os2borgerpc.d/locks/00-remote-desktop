@@ -1,0 +1,4 @@
+/org/gnome/desktop/remote-desktop/rdp/enable
+/org/gnome/desktop/remote-desktop/vnc/enable
+/org/gnome/desktop/remote-desktop/rdp/view-only
+/org/gnome/desktop/remote-desktop/vnc/view-only

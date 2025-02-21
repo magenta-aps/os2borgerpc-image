@@ -134,9 +134,6 @@ mv "$SCRIPT_DIR/common/system/apt_periodic_control.sh" "/etc/os2borgerpc/"
 #sed --in-place "/polkitd/d" "$SCRIPT_DIR/os2borgerpc/desktop/polkit_policy_shutdown_suspend.sh"
 "$SCRIPT_DIR/os2borgerpc/sikkerhed/polkit_policy_shutdown_suspend.sh" True True
 
-# Block Gnome Remote Desktop
-"$SCRIPT_DIR/os2borgerpc/sikkerhed/dconf_disable_gnome_remote_desktop.sh" True
-
 # Remove user access to terminal
 "$SCRIPT_DIR/os2borgerpc/sikkerhed/protect_terminal.sh" False
 
@@ -151,9 +148,6 @@ sed --in-place "s/Prompt=.*/Prompt=never/" /etc/update-manager/release-upgrades
 
 # Correctly make Firefox the initial standard browser
 "$SCRIPT_DIR/os2borgerpc/browser/browser_set_default.sh" firefox_firefox
-
-# Disable the run prompt
-"$SCRIPT_DIR/os2borgerpc/sikkerhed/dconf_run_prompt_toggle.sh" True
 
 # Install Okular and set it as default PDF reader, mostly because it can conveniently also edit PDFs
 #"$SCRIPT_DIR/os2borgerpc/os2borgerpc/install_okular_and_set_as_standard_pdf_reader.sh" True
@@ -181,7 +175,7 @@ fi
 "$SCRIPT_DIR/os2borgerpc/desktop/dconf_a11y.sh" True
 
 # Allow superuser to manage CUPS / change printer settings (and make changes via CUPS' web interface)
-"$SCRIPT_DIR/os2borgerpc/printer/allow_superuser_to_manage_cups.sh"
+usermod -aG lpadmin superuser
 
 # Remove cloned script repository
 rm --recursive "$SCRIPT_DIR"
