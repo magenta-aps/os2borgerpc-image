@@ -46,6 +46,9 @@ useradd superuser --create-home --shell /bin/bash \
 # Overwrite file tree
 "$DIR/do_overwrite.sh"
 
+# do_overwrite doesn't create empty directories so we make this here
+mkdir --parents /etc/os2borgerpc/post-session-scripts
+
 # Hide some irrelevant shortcuts for Borger
 # TODO: Add Firmware Updater which I can't seem to find the name of?! Maybe others.
 PTH="/home/.skjult/.local/share/applications"
@@ -102,7 +105,7 @@ printf "\n\n%s\n\n" "=== About to run assorted OS2borgerPC scripts ==="
 echo "Running scripts from within this image repo"
 
 # Remove Bluetooth indicator applet from Borger user
-"$DIR/remove_bluetooth_applet.sh"
+systemctl disable --now bluetooth.service
 
 # Download the dbus-x11 .deb file to a known folder
 cd /etc/os2borgerpc/
@@ -118,13 +121,13 @@ git clone --depth 1 "$SCRIPTS_CLONE_URL"
 # Cloned script directory
 SCRIPT_DIR="/os2borgerpc-scripts"
 
-# Move the script for securing grub to another location so firstboot can execute it, as somehow only grub-common and not grub2 (and thus not the update-grub command) is available in the image.
+# Move the script for securing grub to another location so post-install can execute it, as somehow only grub-common and not grub2 (and thus not the update-grub command) is available in the image.
 cp "$SCRIPT_DIR/common/system/grub_set_password.py" /usr/share/os2borgerpc/bin/
 
-# Initially disable unattended upgrades to prevent problems with firstboot script
+# Initially disable unattended upgrades to prevent problems with initial setup
 "$SCRIPT_DIR/common/system/apt_periodic_control.sh" false
 
-# Move unattended upgrades script to another folder so that firstboot can run it later
+# Move unattended upgrades script to another folder so that the related service can run it later
 mv "$SCRIPT_DIR/common/system/apt_periodic_control.sh" "/etc/os2borgerpc/"
 
 # Randomize checkins with server.
@@ -144,13 +147,10 @@ mv "$SCRIPT_DIR/common/system/apt_periodic_control.sh" "/etc/os2borgerpc/"
 sed --in-place "s/Prompt=.*/Prompt=never/" /etc/update-manager/release-upgrades
 
 # Improve Firefox browser security
-"$SCRIPT_DIR/os2borgerpc/browser/firefox_global_policies.sh" https://borger.dk
-
-# Correctly make Firefox the initial standard browser
-"$SCRIPT_DIR/os2borgerpc/browser/browser_set_default.sh" firefox_firefox
+"$DIR/firefox_global_policies.sh" https://borger.dk
 
 # Install Okular and set it as default PDF reader, mostly because it can conveniently also edit PDFs
-#"$SCRIPT_DIR/os2borgerpc/os2borgerpc/install_okular_and_set_as_standard_pdf_reader.sh" True
+"$DIR/pdf_reader_switch_default.sh" okular
 
 # Set background images on login screen and desktop
 # Multi user image uses a different image because the Danish one has Danish text on it
@@ -160,19 +160,9 @@ else
   BG="/usr/share/backgrounds/os2bpc_default_desktop.svg"
 fi
 "$SCRIPT_DIR/os2borgerpc/desktop/dconf_desktop_background.sh" $BG
-"$SCRIPT_DIR/os2borgerpc/login/dconf_change_login_bg.sh" True /usr/share/backgrounds/os2bpc_default_login.png
-
-# Make apt-get wait 5 min for dpkg lock
-"$SCRIPT_DIR/images/apt_get_config_set_dpkg_lock_timeout.sh" True
-
-# Set fix-broken true by default in the apt-get configuration
-"$SCRIPT_DIR/images/apt_get_config_set_fix_broken.sh" True
 
 # Hide libreoffice tip of the day
 "$SCRIPT_DIR/os2borgerpc/libreoffice/overwrite_libreoffice_config.sh" True False
-
-# Enable universal access menu by default
-"$SCRIPT_DIR/os2borgerpc/desktop/dconf_a11y.sh" True
 
 # Allow superuser to manage CUPS / change printer settings (and make changes via CUPS' web interface)
 usermod -aG lpadmin superuser
