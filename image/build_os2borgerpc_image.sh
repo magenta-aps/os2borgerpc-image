@@ -113,14 +113,17 @@ printf $(sudo du --summarize --one-file-system --block-size=1 squashfs-root | cu
 
 # Overwrite preseed etc.
 cp --recursive iso_overwrites/* iso/
-# Make a few changes to the copied preseed file if we're building an image with multi-language-support
+# Make a few changes to the preseeding if we're building an image with multi-language-support
 if [ "$LANG_ALL" = "true" ]; then
-  # TODO: An attempt at modifying subiquity to ask for lang/timezone and keyboard layout during multilang install. Testing is TODO!
-  sed --in-place --expression "/locale/d" --expression "\@timezone@d" --expression "\@keyboard:@d" --expression "\@layout:@d" --expression "\@variant:@d" --expression "\@toggle:@d" iso/nocloud/user-data
+  # Use the multilanguage preseed file
+  rm iso/nocloud/user-data
+  mv iso/nocloud/user-data-multilang iso/nocloud/user-data
   # Don't use the OS2-specific background image
   rm iso/boot/grub/borgerpc_grub_bg.png
   # TODO: Potentially remove in the future if converting to a truly language agnostic image: Hardcode ISO bootup text to Swedish
   sed --in-place --expression "s/Install OS2borgerPC from this medium/Installera Sambruk MedborgarPC från detta medium/" iso/boot/grub/grub.cfg
+else
+  rm iso/nocloud/user-data-multilang
 fi
 
 # Recalculate MD5 sums.

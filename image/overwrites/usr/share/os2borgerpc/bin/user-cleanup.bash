@@ -10,7 +10,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin
 # Determine the name of the user desktop directory. This is done via xdg-user-dir,
 # which checks the /home/user/.config/user-dirs.dirs file. To ensure this file exists,
 # we run xdg-user-dirs-update, which generates it based on the environment variables
-# LANG and LANGUAGE. These variables are empty in lightdm so we first export them
+# LANG and LANGUAGE. These variables are empty on the login screen so we first export them
 # based on the values stored in /etc/default/locale
 export "$(grep LANG= /etc/default/locale | tr -d '"')"
 runuser -u $USERNAME xdg-user-dirs-update

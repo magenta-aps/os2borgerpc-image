@@ -13,7 +13,6 @@ autoinstall:
     username: superuser
     password: '$6$/c6Zcifihma/P9NL$MJfwhzrFAcQ0Wq992Wc8XvQ.4mb0aPHK7sUyvRMyicghNmfe7zbvwb5j2AI5AEZq3OfVQRQDbGfzgjrxSfKbp1'
     realname: Superuser
-  # TODO: Fix locale and keyboard
   locale: da_DK.UTF-8
   keyboard:
     layout: dk
@@ -27,12 +26,3 @@ autoinstall:
   shutdown: reboot
   late-commands:
     - curtin in-target -- /usr/share/os2borgerpc/post-install/post-install.sh
-  # TODO: Create Borger here, or create it earlier, during the build in our scripts?
-  #users:
-  #  - name: borger
-  #    gecos: 'Borger'
-  #    # TODO: Do we need to overwrite this password so it's inactive, or is lock_passwd enough for that?
-  #    passwd: $y$j9T$5qjPY5NjJPEK7JLX9SxVM.$DuthBIKUnWTneOvSb5DiSCvM/jWb/VHX3Td0cH3QzBB
-  #    groups: nopasswdlogin
-  #    shell: /bin/bash
-  #    lock_passwd: true
