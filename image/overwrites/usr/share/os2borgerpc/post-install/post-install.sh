@@ -10,6 +10,7 @@ DIR="$(dirname "$0")"
 
 # Create our default post session config for gdm, which runs user-cleanup
 cp "$DIR/files/Default" /etc/gdm3/PostSession/Default
+chmod 700 /etc/gdm3/PostSession/Default
 
 # Install dbus-x11 for dbus-launch and language support packages from .deb files
 dpkg -i /etc/os2borgerpc/*.deb
@@ -42,22 +43,6 @@ rm -rf /home/superuser/Desktop /home/superuser/Documents /home/superuser/Downloa
 # Setup passwdless login of user
 PAM_GDM=/etc/pam.d/gdm-password
 sed -i "/include common-auth/i auth sufficient pam_succeed_if.so user ingroup nopasswdlogin" $PAM_GDM
-
-# Setup service for running greeter setup on boot
-BOOT_GREETER_SETUP_SERVICE="/etc/systemd/system/boot_greeter_setup.service"
-cat << EOF > $BOOT_GREETER_SETUP_SERVICE
-[Unit]
-Description=OS2borgerPC boot greeter setup service
-
-[Service]
-Type=simple
-ExecStart=/usr/share/os2borgerpc/bin/greeter_setup_script.sh
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-systemctl enable "$(basename $BOOT_GREETER_SETUP_SERVICE)"
 
 # Setup delayed start of unattended upgrades
 TIME_TO_START=$(date -d 'now+2hours' +%FT%R)

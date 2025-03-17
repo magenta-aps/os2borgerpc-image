@@ -128,10 +128,16 @@ cat << EOF > "$POLICY_FILE"
 }
 EOF
 
+# Make sure the mime file exists
+if [ ! -f $GLOBAL_MIME_FILE ]; then
+	cat <<- EOF > $GLOBAL_MIME_FILE
+[Default Applications]
+EOF
+fi
+
 # Force Okular OR Evince to be the only PDF applications listed for the PDF filetypes,
 # to prevent programs like firefox from making gnome-desktop-portal prompt for which application to open the PDF with, when Firefox is set to use the external PDF reader
 # The contents of this section is shared by the firefox and okular scripts
-# Ideally crudini could create these sections and be idempotent about it, but it seems it doesn't have that feature
 if ! grep "Removed Associations" $GLOBAL_MIME_FILE; then
 	cat <<- EOF >> "$GLOBAL_MIME_FILE"
 		[Removed Associations]

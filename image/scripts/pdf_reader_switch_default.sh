@@ -36,14 +36,8 @@ PROGRAMS_TO_REMOVE="libreoffice-draw.desktop;google-chrome.desktop;microsoft-edg
 # Removes PDF programs from the Default Applications section in the specified file
 cleanup_mime_file_default() {
   MIME_FILE=$1
-  crudini --del $GLOBAL_MIME_FILE "Default Applications" $PDF_TYPE_1
-  crudini --del $GLOBAL_MIME_FILE "Default Applications" $PDF_TYPE_2
-  crudini --del $GLOBAL_MIME_FILE "Default Applications" $PDF_TYPE_3
-  crudini --del $GLOBAL_MIME_FILE "Default Applications" $PDF_TYPE_4
-  crudini --del $GLOBAL_MIME_FILE "Default Applications" $PDF_TYPE_5
-
-  # Crudini adds a space before and after the equals sign but otherwise it matches ini/toml. Remove those spaces.
-  sed --in-place "s/ = /=/" "$MIME_FILE"
+  sed --in-place "/Default Applications/,/Removed Associations/ \
+  {\@$PDF_TYPE_1\|$PDF_TYPE_2\|$PDF_TYPE_3\|$PDF_TYPE_4\|$PDF_TYPE_5@d}" "$MIME_FILE"
 }
 
 set_default_pdf_reader() {
@@ -61,34 +55,28 @@ set_default_pdf_reader() {
   OLD_USER_MIME_FILE="/home/.skjult/.config/mimeapps.list"
   [ -f $OLD_USER_MIME_FILE ] && cleanup_mime_file_default $OLD_USER_MIME_FILE
 
-  if [ ! -f $GLOBAL_MIME_FILE ]; then
-		cat <<- EOF > $GLOBAL_MIME_FILE
-			[Default Applications]
-		EOF
-  fi
-
-  SECTION="Default Applications"
-  crudini --set $GLOBAL_MIME_FILE "$SECTION" $PDF_TYPE_1 "$DESKTOP_FILE_PATH"
-  crudini --set $GLOBAL_MIME_FILE "$SECTION" $PDF_TYPE_2 "$DESKTOP_FILE_PATH"
-  crudini --set $GLOBAL_MIME_FILE "$SECTION" $PDF_TYPE_3 "$DESKTOP_FILE_PATH"
-  crudini --set $GLOBAL_MIME_FILE "$SECTION" $PDF_TYPE_4 "$DESKTOP_FILE_PATH"
-  crudini --set $GLOBAL_MIME_FILE "$SECTION" $PDF_TYPE_5 "$DESKTOP_FILE_PATH"
-
-  # Crudini adds a space before and after the equals sign but otherwise it matches ini/toml. Remove those spaces.
-  sed --in-place "s/ = /=/" $GLOBAL_MIME_FILE
+  sed --in-place "/Default Applications/a \
+$PDF_TYPE_1=$DESKTOP_FILE_PATH\n\
+$PDF_TYPE_2=$DESKTOP_FILE_PATH\n\
+$PDF_TYPE_3=$DESKTOP_FILE_PATH\n\
+$PDF_TYPE_4=$DESKTOP_FILE_PATH\n\
+$PDF_TYPE_5=$DESKTOP_FILE_PATH" "$GLOBAL_MIME_FILE"
 }
 
 # SCRIPT PROPER
 
 apt-get update
 
-# The mime file has different sections we interact with which is kinda annoying to handle with sed/cat eof - crudini understands ini/toml files which is close to the format the desktop files use.
-apt-get install --assume-yes crudini
+# Make sure the mime file exists
+if [ ! -f $GLOBAL_MIME_FILE ]; then
+	cat <<- EOF > $GLOBAL_MIME_FILE
+[Default Applications]
+EOF
+fi
 
 # Force Okular OR Evince to be the only PDF applications listed for the PDF filetypes,
 # to prevent programs like firefox from making gnome-desktop-portal prompt for which application to open the PDF with, when Firefox is set to use the external PDF reader
 # The contents of this section is shared by the firefox and okular scripts
-# Ideally crudini could create these sections and be idempotent about it, but it seems it doesn't have that feature
 if ! grep "Removed Associations" $GLOBAL_MIME_FILE; then
 	cat <<- EOF >> "$GLOBAL_MIME_FILE"
 		[Removed Associations]
@@ -103,7 +91,6 @@ fi
 if [ "$PDF_READER_TO_SWITCH_TO" = "okular" ]; then
 
   apt-get install --assume-yes okular
-  apt-get remove --assume-yes evince  # Unfortunately removing evince alone does not mean Okular becomes default. Instead, LibreOffice Draw becomes default.
   set_default_pdf_reader "$PDF_READER_TO_SWITCH_TO"
 
 	cat <<- EOF > $OKULAR_CONFIG_1
