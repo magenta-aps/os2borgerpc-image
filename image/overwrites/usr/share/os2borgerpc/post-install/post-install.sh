@@ -104,8 +104,14 @@ EOF
 
 systemctl enable "$(basename $UNATTENDED_UPGRADES_DELAY_SERVICE)"
 
-# We remove the following programs here, because they're not installed during install_dependencies.sh(?!) so we can't remove them there
-apt-get remove --assume-yes --purge deja-dup kdeconnect remmina transmission-gtk
+# We remove the following programs here, because they're either not installed during install_dependencies.sh(?!)
+# so we can't remove them there or removing them earlier causes apt to complain about "missing file list files"
+# libfprint-2-2 because it fails during installation/updating because of an unmet interactive step, but we don't need finger print reading anyway so we can delete it
+# apport and whoopsie because error reporting popping up is distracting on public pcs
+# ...and the rest because they likely aren't needed by users
+apt-get remove --assume-yes --purge deja-dup kdeconnect remmina transmission-gtk apport evince libfprint-2-2 nautilus-extension-gnome-terminal nautilus-sendto openvpn whoopsie
+apt-get autoremove
+apt-get clean
 
 # Create our default config for gdm
 cat << EOF > /etc/gdm3/custom.conf
