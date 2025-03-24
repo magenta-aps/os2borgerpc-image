@@ -113,6 +113,8 @@ printf $(sudo du --summarize --one-file-system --block-size=1 squashfs-root | cu
 
 # Overwrite preseed etc.
 cp --recursive iso_overwrites/* iso/
+# Add the version number to grub.cfg
+sed --in-place "s/VERSION/$(cat ../VERSION)/" iso/boot/grub/grub.cfg
 # Make a few changes to the preseeding if we're building an image with multi-language-support
 if [ "$LANG_ALL" = "true" ]; then
   # Use the multilanguage preseed file
@@ -121,7 +123,7 @@ if [ "$LANG_ALL" = "true" ]; then
   # Don't use the OS2-specific background image
   rm iso/boot/grub/borgerpc_grub_bg.png
   # TODO: Potentially remove in the future if converting to a truly language agnostic image: Hardcode ISO bootup text to Swedish
-  sed --in-place --expression "s/Install OS2borgerPC from this medium/Installera Sambruk MedborgarPC från detta medium/" iso/boot/grub/grub.cfg
+  sed --in-place "s/Install OS2borgerPC \([0-9\.]*\) from this medium/Installera Sambruk MedborgarPC \1 från detta medium/" iso/boot/grub/grub.cfg
 else
   rm iso/nocloud/user-data-multilang
 fi
