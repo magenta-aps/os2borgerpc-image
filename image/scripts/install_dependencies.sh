@@ -53,7 +53,7 @@ else
     echo "No dependencies missing...?"
 fi
 
-#echo "Install any missing language support packages for the missing target languages specifically"
+echo "Install any missing language support packages for the missing target languages specifically"
 # shellcheck disable=SC2046 # We want word-splitting here
 apt-get install --assume-yes $(check-language-support -l $LN) $(check-language-support -l en)
 # Mark language support packages as explicitly installed as otherwise it seems later stages gets rid of some of them

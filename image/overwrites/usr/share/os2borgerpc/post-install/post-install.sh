@@ -104,7 +104,7 @@ EOF
 
 systemctl enable "$(basename $UNATTENDED_UPGRADES_DELAY_SERVICE)"
 
-# We remove the following programs here, because they're either not installed during install_dependencies.sh(?!)
+# We remove the following programs here, because they're either not installed during prepare_os2borgerpc(?!)
 # so we can't remove them there or removing them earlier causes apt to complain about "missing file list files"
 # libfprint-2-2 because it fails during installation/updating because of an unmet interactive step, but we don't need finger print reading anyway so we can delete it
 # apport and whoopsie because error reporting popping up is distracting on public pcs

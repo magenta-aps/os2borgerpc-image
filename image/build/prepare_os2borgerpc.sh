@@ -27,9 +27,6 @@ fi
 
 echo "Removing packages we don't need, before we upgrade all packages:"
 
-# Thunderbird became a snap in 24.04
-snap remove thunderbird
-
 if [ "$LANG_ALL" = "false" ]; then
     # Danish image version: Remove unneeded language support, as the installer seems to otherwise spend a decent amount of time removing them during the installation
     # Exit if this fails, which it can do if a package name changes
@@ -42,7 +39,7 @@ SETUP_LOG="os2borgerpc_setup_log.txt"
 /mnt/image/scripts/os2borgerpc_setup.sh 2>&1 | tee $SETUP_LOG
 
 # If any "No such file or directory" popped up (e.g. a script has been renamed/moved): Exit with an error
-# Ignore this variant of the line, though:
+# Ignore these variants of the line, though:
 sed --in-place --expression "/Cannot set LC_ALL to default locale: No such file or directory/d" \
     --expression "\@Failed to write database /usr/lib/udev/hwdb.bin: No such file or directory@d" \
     --expression "\@E: Can not write log (Is /dev/pts mounted?) - posix_openpt (2: No such file or directory)@d" $SETUP_LOG
