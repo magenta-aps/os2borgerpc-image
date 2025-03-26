@@ -10,7 +10,10 @@ autoinstall:
     install: false
   drivers:
     install: true
-  # TODO: Remember to afterwards set superusers umask to 0077 if it isn't default
+  apt:
+    primary:
+    - arches: [default]
+      uri: http://se.archive.ubuntu.com/ubuntu
   identity:
     hostname: os2borgerpc
     username: superuser
