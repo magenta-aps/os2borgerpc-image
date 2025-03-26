@@ -3,4 +3,5 @@ Dpkg::Options {
    "--force-confold";
 };
 Dpkg::Lock {Timeout "300";};
+Dpkg {ConfigurePending "true";};
 Apt:Get {Fix-Broken "true";};
