@@ -16,6 +16,7 @@ autoinstall:
     username: superuser
     password: '$6$/c6Zcifihma/P9NL$MJfwhzrFAcQ0Wq992Wc8XvQ.4mb0aPHK7sUyvRMyicghNmfe7zbvwb5j2AI5AEZq3OfVQRQDbGfzgjrxSfKbp1'
     realname: Superuser
+  timezone: Europe/Stockholm
   updates: security
   source:
     id: ubuntu-desktop

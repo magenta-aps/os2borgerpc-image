@@ -2,10 +2,10 @@
 
 # This script cleans up the users home directory.
 
-USERNAME="user"
-
 # We need to set PATH to ensure that the script works correctly when run by gdm
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin
+
+USERNAME="user"
 
 # Determine the name of the user desktop directory. This is done via xdg-user-dir,
 # which checks the /home/user/.config/user-dirs.dirs file. To ensure this file exists,
@@ -39,6 +39,11 @@ crontab -u user /etc/os2borgerpc/usercron
 # Remove possible scheduled at commands
 if [ -f /usr/bin/at ]; then
   atq | cut --fields 1 | xargs --no-run-if-empty atrm
+fi
+
+# Disable airplane mode unless they're using ethernet
+if ! nmcli c show --active | grep --quiet "ethernet" && nmcli r wifi | grep --quiet "disabled"; then
+  nmcli r all on
 fi
 
 # Restore $HOME
