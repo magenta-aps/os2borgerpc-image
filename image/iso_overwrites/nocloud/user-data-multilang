@@ -27,3 +27,4 @@ autoinstall:
   shutdown: reboot
   late-commands:
     - curtin in-target -- /usr/share/os2borgerpc/post-install/post-install.sh
+    - curtin in-target -- /usr/sbin/usermod --comment 'Medborgare' user

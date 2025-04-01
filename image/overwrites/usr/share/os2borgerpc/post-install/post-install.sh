@@ -18,31 +18,41 @@ dpkg -i /etc/os2borgerpc/*.deb
 # Secure GRUB as GRUB should now be fully installed, unlike at the time the image is being created
 /usr/share/os2borgerpc/bin/grub_set_password.py "$(pwgen -N 1 -s 12)"
 
-# Detect the locale chosen under the installation and rename "Borger" if not Danish
-# Locale file may or may not contain " around the value of LANG
-LOCALE=$(grep LANG /etc/default/locale | cut --delimiter '=' --fields 2 | tr --delete '"' | cut --delimiter '_' --fields 1)
-if [ "$LOCALE" = "sv" ]; then
-    usermod --comment 'Medborgare' user
-elif [ "$LOCALE" = "en" ]; then
-    usermod --comment 'Citizen' user
-fi
-
 # For some reason, Ubuntu 24 does not keep the language packages installed during image building
 # even though we mark them as manually installed. As a result, we install them from local .deb-files
 # earlier in this script. The lack of installed language packages during the actual installation also
 # results in the user and superuser directories initially being created with english names (the fallback).
-# These directories are removed here. The correct superuser directories are created by a .config/autostart
-# script that also moves and activates the superuser shortcuts
-# The correct user directories are created on first login as user
-chattr -i /home/user/Desktop/ || true # Ensure that the user Desktop is mutable
+# The incorrect superuser directories are removed here. The correct superuser directories are created by
+# a .config/autostart script that also moves and activates the superuser shortcuts
+# Removing the incorrect user directories here does not work for some reason and they are created again.
+# Running user-cleanup.bash here also does not work. However, the user directories are fixed the first time
+# user-cleanup.bash is run after the installation, i.e. on the first logout from user or superuser.
 rm -rf /home/superuser/Desktop /home/superuser/Documents /home/superuser/Downloads /home/superuser/Music \
-  /home/superuser/Pictures /home/superuser/Public /home/superuser/Templates /home/superuser/Videos \
-  /home/user/Desktop /home/user/Documents /home/user/Downloads /home/user/Music /home/user/Pictures \
-  /home/user/Public /home/user/Templates /home/user/Videos /home/user/.config/user-dirs.*
+  /home/superuser/Pictures /home/superuser/Public /home/superuser/Templates /home/superuser/Videos
 
 # Setup passwdless login of user
 PAM_GDM=/etc/pam.d/gdm-password
 sed -i "/include common-auth/i auth sufficient pam_succeed_if.so user ingroup nopasswdlogin" $PAM_GDM
+
+# Setup service to run first-logout script on shutdown or reboot
+FIRST_LOGOUT_SCRIPT="/etc/os2borgerpc/post-session-scripts/first-logout.sh"
+FIRST_LOGOUT_SERVICE="/etc/systemd/system/first_logout.service"
+
+cat << EOF > $FIRST_LOGOUT_SERVICE
+[Unit]
+Description=First logout service
+DefaultDependencies=no
+Before=shutdown.target
+
+[Service]
+Type=simple
+ExecStart=$FIRST_LOGOUT_SCRIPT
+
+[Install]
+WantedBy=halt.target reboot.target shutdown.target
+EOF
+
+systemctl enable "$(basename $FIRST_LOGOUT_SERVICE)"
 
 # Setup delayed start of unattended upgrades
 TIME_TO_START=$(date -d 'now+2hours' +%FT%R)
