@@ -100,6 +100,14 @@ cd -
 # Prevent future upgrade notifications
 sed --in-place "s/Prompt=.*/Prompt=never/" /etc/update-manager/release-upgrades
 
+# Remove user access to settings. This also hides settings from user
+PROGRAM_PATH="/usr/bin/gnome-control-center"
+dpkg-statoverride --update --add superuser root 770 "$PROGRAM_PATH" || true
+
+# Remove user access to terminal
+PROGRAM_PATH="/usr/bin/gnome-terminal"
+dpkg-statoverride --update --add superuser root 770 "$PROGRAM_PATH" || true
+
 printf "\n\n%s\n\n" "=== About to run assorted OS2borgerPC scripts ==="
 
 echo "Running scripts from within this image repo"
@@ -133,12 +141,6 @@ mv "$SCRIPT_DIR/common/system/apt_periodic_control.sh" "/etc/os2borgerpc/"
 
 # Block suspend, shut down and reboot and remove them from the menu
 "$SCRIPT_DIR/os2borgerpc/sikkerhed/polkit_policy_shutdown_suspend.sh" True True
-
-# Remove user access to terminal
-"$SCRIPT_DIR/os2borgerpc/sikkerhed/protect_terminal.sh" False
-
-# Remove user access to settings
-"$SCRIPT_DIR/os2borgerpc/sikkerhed/adjust_settings_access.sh" False
 
 # Set background images on login screen and desktop
 # Multi user image uses a different image because the Danish one has Danish text on it

@@ -24,11 +24,18 @@ dpkg -i /etc/os2borgerpc/*.deb
 # results in the user and superuser directories initially being created with english names (the fallback).
 # The incorrect superuser directories are removed here. The correct superuser directories are created by
 # a .config/autostart script that also moves and activates the superuser shortcuts
-# Removing the incorrect user directories here does not work for some reason and they are created again.
-# Running user-cleanup.bash here also does not work. However, the user directories are fixed the first time
-# user-cleanup.bash is run after the installation, i.e. on the first logout from user or superuser.
+# The user directories are fixed when user-cleanup.bash is run on first boot, provided that we ensure
+# that the locale is correctly set at that time. Even if we do not ensure that locale is correctly set
+# at the time of first boot, the system itself will set it correctly after first boot so the user directories
+# will always be fixed when user-cleanup.bash is run for the first time after first boot.
 rm -rf /home/superuser/Desktop /home/superuser/Documents /home/superuser/Downloads /home/superuser/Music \
   /home/superuser/Pictures /home/superuser/Public /home/superuser/Templates /home/superuser/Videos
+# These lines are just meant to ensure that danish locale is set correctly at the time of first boot
+# In the case of multilang images, the danish locale is overwritten by the swedish locale in a later
+# late-command. If a language other than swedish is selected, the system itself will set the correct
+# locale after first boot.
+echo "LANG=da_DK.UTF-8" > /etc/locale.conf
+ln --symbolic /etc/locale.conf /etc/default/locale
 
 # Setup passwdless login of user
 PAM_GDM=/etc/pam.d/gdm-password
@@ -42,20 +49,19 @@ cat << EOF > $FIRST_LOGOUT_SERVICE
 [Unit]
 Description=First logout service
 DefaultDependencies=no
-Before=shutdown.target
 
 [Service]
 Type=simple
 ExecStart=$FIRST_LOGOUT_SCRIPT
 
 [Install]
-WantedBy=halt.target reboot.target shutdown.target
+WantedBy=halt.target reboot.target shutdown.target multi-user.target
 EOF
 
 systemctl enable "$(basename $FIRST_LOGOUT_SERVICE)"
 
 # Setup delayed start of unattended upgrades
-TIME_TO_START=$(date -d 'now+2hours' +%FT%R)
+TIME_TO_START=$(date -d 'now+4hours' +%FT%R)
 mkdir --parents "/usr/local/lib/os2borgerpc"
 UNATTENDED_UPGRADES_DELAY="/usr/local/lib/os2borgerpc/unattended_upgrades_delay.py"
 UNATTENDED_UPGRADES_DELAY_SERVICE="/etc/systemd/system/os2borgerpc-unattended_upgrades_delay.service"
@@ -126,6 +132,7 @@ apt-get clean
 # Create our default config for gdm
 cat << EOF > /etc/gdm3/custom.conf
 [daemon]
+WaylandEnable=false
 
 [security]
 DisallowTCP=true

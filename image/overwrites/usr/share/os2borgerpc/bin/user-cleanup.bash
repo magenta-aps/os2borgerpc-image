@@ -22,9 +22,9 @@ chattr -i "$DESKTOP"
 pkill -KILL -u user
 
 # Find all files/directories owned by user in the world-writable directories
-FILES_DIRS=$(find /var/tmp/ /var/crash/ /var/metrics/ /var/lock/ -user user)
+FILES_DIRS=$(find /tmp/ /var/tmp/ /var/crash/ /var/metrics/ /var/lock/ -user user)
 
-rm --recursive --force /tmp/* /tmp/.??* /dev/shm/* /dev/shm/.??* /home/$USERNAME $FILES_DIRS
+rm --recursive --force /dev/shm/* /dev/shm/.??* /home/$USERNAME $FILES_DIRS
 # Remove pending print jobs
 PRINTERS=$(lpstat -p | grep printer | awk '{ print $2; }')
 

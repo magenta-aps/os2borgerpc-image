@@ -12,9 +12,7 @@ service rsyslog restart
 # Detect the locale chosen under the installation and rename "Borger" if not Danish
 # Locale file may or may not contain " around the value of LANG
 LOCALE=$(grep LANG /etc/default/locale | cut --delimiter '=' --fields 2 | tr --delete '"' | cut --delimiter '_' --fields 1)
-if [ "$LOCALE" = "sv" ]; then
-    usermod --comment 'Medborgare' user
-elif [ "$LOCALE" = "en" ]; then
+if [ "$LOCALE" = "en" ]; then
     usermod --comment 'Citizen' user
 fi
 
