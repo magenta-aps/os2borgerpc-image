@@ -7,7 +7,7 @@ snap remove thunderbird
 # Due to weirdness in 24.04, the system logs initially use UTC rather than the
 # chosen timezone, unless the computer had internet during the installation.
 # We restart the rsyslog service to make it start using the chosen timezone
-service rsyslog restart
+systemctl restart rsyslog.service
 
 # Detect the locale chosen under the installation and rename "Borger" if not Danish
 # Locale file may or may not contain " around the value of LANG

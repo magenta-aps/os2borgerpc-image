@@ -1,4 +1,4 @@
-## Version 6.0.0, April 28, 2025
+## Version 6.0.0, May 5, 2025
 
 New in this version:
 
