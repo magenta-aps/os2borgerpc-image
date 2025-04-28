@@ -1,3 +1,16 @@
+## Version 6.0.0, April 28, 2025
+
+New in this version:
+
+- Upgraded to Ubuntu 24.04.2.
+- Switch from LightDM to GDM
+- Related to the above: Move firstboot script functionality to subiquity post-install script
+- Improve user-cleanup.bash to only remove user-owned files in /tmp to prevent various issues
+- Disable automatic user login by default
+- Automatically hide superuser on login screen after first login
+- Include more scripts directly in image to provide an improved "Out of the box" experience
+- Install client via pipx instead of pip
+
 ## Version 5.3.0, June 13, 2024
 
 New in this version:
