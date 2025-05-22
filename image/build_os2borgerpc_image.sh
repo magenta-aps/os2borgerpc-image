@@ -26,23 +26,26 @@ if [ "$1" == "--lang-all" ] || [ "$2" == "--lang-all" ] || [ "$3" == "--lang-all
   LANG_ALL=true
   echo "Arguments: Setting up better support for all languages"
   COUNT=$((COUNT+1))
+else
+  LANG_ALL=false
 fi
 # Remove the optional arguments if there were any, so we only have the required ones left
 shift $COUNT
 
 ISO_PATH=$1
 IMAGE_NAME=$2
+SCRIPTS_CLONE_URL=$3
 
 
-if [[ -z $ISO_PATH || -z $IMAGE_NAME ]]
-then
-    echo "Usage: "$0"  [--clean] [--skip-build-deps] [--lang-all] iso_file image_name"
+if [[ -z $ISO_PATH || -z $IMAGE_NAME || -z $SCRIPTS_CLONE_URL ]]; then
+    echo "Usage: "$0"  [--clean] [--skip-build-deps] [--lang-all] iso_file image_name scripts_clone_url"
     echo ""
     echo "--clean: First delete temp build files, e.g. from within iso/"
     echo "--skip-build-deps: Skip installing build dependencies. Useful if testing on a non-debian-system, ie. without apt"
     echo "--lang-all: Build an image with more multi-language-support out of the box"
     echo "iso_file must be a valid path to the ISO file to be remastered"
     echo "image_name is the name of the output image"
+    echo "scripts_clone_url is the URL to the repo where scripts are cloned from"
     echo ""
     exit 1
 fi
@@ -64,7 +67,6 @@ if [ "$CLEAN_BUILD" ]
 then
     # In case it was cancelled prematurely and /tmp is still bind-mounted to squashfs-root/tmp
     unmount_cleanup
-    sudo chattr -f -i squashfs-root/var/lib/lightdm/.cache/unity-greeter/state || true
     sudo rm --recursive --force iso/.disk/ iso/* squashfs squashfs-root/ /tmp/build_installed_packages_list.txt /tmp/scripts_installed_packages_list.txt /tmp/os2borgerpc_install_log.txt /tmp/os2borgerpc_upgrade_log.txt boot_hybrid.img ubuntu22-desktop-amd64.efi
 fi
 
@@ -76,7 +78,7 @@ fi
 build/extract_iso.sh "$ISO_PATH" iso
 
 # Unsquash and customize
-sudo unsquashfs -force iso/casper/filesystem.squashfs > /dev/null
+sudo unsquashfs -force iso/casper/minimal.squashfs > /dev/null
 
 # Mounting in our own tmp into the chroot so we retain access to the log files written from within it
 # This will fail in the pipeline due to a permissions error, but it will work locally
@@ -87,7 +89,7 @@ sudo rsync --recursive --exclude squashfs-root --exclude image/*.iso --exclude .
 
 figlet "About to enter chroot"
 
-build/chroot_os2borgerpc.sh squashfs-root ./build/prepare_os2borgerpc.sh "$LANG_ALL"
+build/chroot_os2borgerpc.sh squashfs-root ./build/prepare_os2borgerpc.sh "$LANG_ALL" "$SCRIPTS_CLONE_URL"
 
 
 # Regenerate manifest
@@ -95,8 +97,7 @@ build/chroot_os2borgerpc.sh squashfs-root build/create_manifest.sh > iso/casper/
 figlet "Exiting chroot"
 
 cp iso/casper/filesystem.manifest iso/casper/filesystem.manifest-desktop
-sed --in-place '/ubiquity/d' iso/casper/filesystem.manifest-desktop
-sed --in-place '/casper/d' iso/casper/filesystem.manifest-desktop
+sed --in-place --expression '/ubiquity/d' --expression '/casper/d' iso/casper/filesystem.manifest-desktop
 
 
 # Build squashfs for the ISO
@@ -104,28 +105,32 @@ sed --in-place '/casper/d' iso/casper/filesystem.manifest-desktop
 # First delete the image building files from squashfs again
 sudo rm --recursive --force $BUILD_FILES_COPY_DESTINATION/* squashfs-root/*.sh
 
-rm iso/casper/filesystem.squashfs
-sudo mksquashfs squashfs-root iso/casper/filesystem.squashfs
+rm iso/casper/minimal.squashfs
+sudo mksquashfs squashfs-root iso/casper/minimal.squashfs
 
 # Calculate FS size
 printf $(sudo du --summarize --one-file-system --block-size=1 squashfs-root | cut --fields 1) > iso/casper/filesystem.size
 
 # Overwrite preseed etc.
 cp --recursive iso_overwrites/* iso/
-# Make a few changes to the copied preseed file if we're building an image with multi-language-support
-if [ "$LANG_ALL" ]
-then
-  # Don't preseed locale/timezone
-  sed --in-place --expression "/keyboard-configuration/d" --expression "\@debian-installer/locale@d" --expression "\@d-i time/zone@d" iso/preseed/ubuntu.seed
+# Add the version number to grub.cfg
+sed --in-place "s/VERSION/$(cat ../VERSION)/" iso/boot/grub/grub.cfg
+# Make a few changes to the preseeding if we're building an image with multi-language-support
+if [ "$LANG_ALL" = "true" ]; then
+  # Use the multilanguage preseed file
+  rm iso/nocloud/user-data
+  mv iso/nocloud/user-data-multilang iso/nocloud/user-data
   # Don't use the OS2-specific background image
   rm iso/boot/grub/borgerpc_grub_bg.png
-  # TODO: Potentially remove in the future if converting to a true language agnostic image: Hardcode ISO bootup text to Swedish
-  sed --in-place --expression "s/Install OS2borgerPC from this medium/Installera Sambruk MedborgarPC från detta medium/" iso/boot/grub/grub.cfg
+  # TODO: Potentially remove in the future if converting to a truly language agnostic image: Hardcode ISO bootup text to Swedish
+  sed --in-place "s/Install OS2borgerPC \([0-9\.]*\) from this medium/Installera Sambruk MedborgarPC \1 från detta medium/" iso/boot/grub/grub.cfg
+else
+  rm iso/nocloud/user-data-multilang
 fi
 
 # Recalculate MD5 sums.
 cd iso
-md5sum casper/filesystem.squashfs > md5sum.txt
+md5sum casper/minimal.squashfs > md5sum.txt
 cd ..
 
 # Cleanup and unmount our tmp from squashfs-root

@@ -1,25 +1,26 @@
-Technical Documentation
-=======================
+# Technical Documentation
 
-********************************
-Creating a new OS2borgerPC image
-********************************
+## Creating a new OS2borgerPC image
 
 PREREQUISITES: squashfs-tools genisoimage p7zip-full xorriso figlet
 
-# Resources about how to build or tweak this:
+Resources about how to build or tweak this:
 
 - https://help.ubuntu.com/community/LiveCDCustomization
 - https://wiki.ubuntu.com/UbiquityAutomation
 - https://wiki.ubuntu.com/DesktopCDOptions
 - https://help.ubuntu.com/lts/installation-guide/amd64/apbs01.html
 
-cd to the ``image`` directory:
-$ cd image
+cd to the `image` directory:
+```sh
+cd image
+```
 
 From this directory, run the following command:
 
-$ ./build_os2borgerpc_image.sh iso_path image_name
+```sh
+./build_os2borgerpc_image.sh iso_path image_name
+```
 
 "iso_path" is a path to the ISO image to be remastered.
 
@@ -27,9 +28,7 @@ $ ./build_os2borgerpc_image.sh iso_path image_name
 output ISO file will be called "$image_name".iso.
 
 
-*********************************************************
-Convert a vanilla Ubuntu installation into an OS2borgerPC
-*********************************************************
+## Convert a vanilla Ubuntu installation into an OS2borgerPC
 
 Start installing a vanilla Ubuntu system - Ubuntu 22.04 in the
 present example. Install on a virtual or physical machine. If
@@ -48,22 +47,22 @@ can be whatever you want
 Enter the standard OS2borgerPC password (if you don't know it, ask
 someone or choose your own).
 
-To install OS2borgerPC, you need the ``prepare_os2borgerpc.sh``
+To install OS2borgerPC, you need the `prepare_os2borgerpc.sh`
 file. You'll find it in this repository, in
-``image/build/prepare_os2borgerpc.sh``. You can also read
+`image/build/prepare_os2borgerpc.sh`. You can also read
 that file and perform the commands manually, step by step.
 
 Change execution rights for the installation file. Open a terminal:
 
-.. code-block:: bash
-
-	sudo chmod +x prepare_os2borgerpc.sh
+```sh
+sudo chmod +x prepare_os2borgerpc.sh
+```
 
 Start the installation:
 
-.. code-block:: bash
-
-	./prepare_os2borgerpc.sh
+```sh
+./prepare_os2borgerpc.sh
+```
 
 Now the system is ready to be connected to the admin system.
 

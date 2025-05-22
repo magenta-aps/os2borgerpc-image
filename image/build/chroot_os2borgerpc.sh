@@ -6,9 +6,11 @@ printf "\n\n%s\n\n" "===== RUNNING: $0 ====="
 
 DIR=$1
 COMMAND=$2
-ARG=$3 # Optional
+ARGS=( "${@:3}" ) # Optional arguments
 
-echo $COMMAND
+echo "Command is: $COMMAND"
+echo "Args for the command are: ${ARGS[*]}"
+
 if [ "$DIR" == "" ]; then
     echo "No directory specified"
     exit 1
@@ -25,12 +27,11 @@ fi
 sudo cp /etc/resolv.conf squashfs-root/run/systemd/resolve/stub-resolv.conf
 
 echo "Chroot'ing into what will be the filesystem on the OS2BorgerPC"
-if [ -z $COMMAND ]
-then
+if [ -z $COMMAND ]; then
     sudo chroot "$DIR"
 else
     EXE=$(basename $COMMAND)
     sudo cp $COMMAND $DIR
     sudo chmod +x $DIR/$EXE
-    sudo chroot "$DIR" /"$EXE" "$ARG"
+    sudo chroot "$DIR" /"$EXE" "${ARGS[@]}"
 fi

@@ -1,0 +1,5 @@
+[Default Applications]
+application/xhtml+xml=firefox_firefox.desktop
+text/html=firefox_firefox.desktop
+x-scheme-handler/http=firefox_firefox.desktop
+x-scheme-handler/https=firefox_firefox.desktop

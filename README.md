@@ -1,6 +1,4 @@
-==================
-OS2borgerPC: Image
-==================
+# OS2borgerPC: Image
 
 This code contains a specialized Ubuntu distribution for audience PCs in
 public libraries in Denmark.
@@ -14,7 +12,7 @@ to ensure audience user's privacy. A number of other customizations are
 performed.
 
 Read the documentation for this project in docs/ or at
-`Read The Docs <https://os2borgerpc-image.readthedocs.io/>`_.
+[Read The Docs](https://os2borgerpc-image.readthedocs.io/).
 
 The system was prepared by Magenta Aps (https://www.magenta.dk) and is part of the
 OS2borgerPC project.
@@ -23,10 +21,6 @@ For more information about the OS2borgerPC project, please see the
 official home page:
 
     https://os2.eu/produkt/os2borgerpc
-
-and the offical Github project:
-
-    https://github.com/OS2borgerPC/
 
 All code is made available under Version 3 of the GNU General Public
 License - see the LICENSE and COPYRIGHT files for details.
