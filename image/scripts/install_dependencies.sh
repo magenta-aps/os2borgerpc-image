@@ -63,7 +63,7 @@ apt-mark manual $(check-language-support -l $LN --show-installed) $(check-langua
 # Download the language support packages to a known folder because the Ubuntu 24.04 installer seems to get rid of
 # some of them even if they're marked as explicitly installed
 cd /etc/os2borgerpc
-apt download $(check-language-support -l $LN --show-installed) $(check-language-support -l en --show-installed) language-pack-$LN-base language-pack-en-base language-pack-gnome-$LN-base language-pack-gnome-en-base
+apt download $(check-language-support -l $LN --show-installed) $(check-language-support -l en --show-installed) language-pack-$LN-base language-pack-en-base language-pack-gnome-$LN-base language-pack-gnome-en-base hyphen-$LN libreoffice-help-$LN libreoffice-l10n-$LN mythes-$LN
 cd -
 
 # Necessary pipx setup

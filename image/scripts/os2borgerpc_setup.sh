@@ -107,6 +107,7 @@ dpkg-statoverride --update --add superuser root 770 "$PROGRAM_PATH" || true
 # Remove user access to terminal
 PROGRAM_PATH="/usr/bin/gnome-terminal"
 dpkg-statoverride --update --add superuser root 770 "$PROGRAM_PATH" || true
+dpkg-statoverride --update --add root superuser 750 "$PROGRAM_PATH.real" || true
 
 printf "\n\n%s\n\n" "=== About to run assorted OS2borgerPC scripts ==="
 
