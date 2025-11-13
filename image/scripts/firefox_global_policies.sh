@@ -61,6 +61,12 @@ if [ -n "$ADDITIONAL_PAGES" ]; then
   PAGES_STRING+="]," # finish array-string
 fi
 
+if [ "$LANG_ALL" = "true" ]; then
+  INITIAL_LANGUAGE="sv_SE"
+else
+  INITIAL_LANGUAGE="da_DK"
+fi
+
 cat << EOF > "$POLICY_FILE"
 {
   "policies": {
@@ -110,6 +116,7 @@ cat << EOF > "$POLICY_FILE"
     "Preferences": {
       "datareporting.policy.dataSubmissionPolicyBypassNotification": true
     },
+    "RequestedLocales": "$INITIAL_LANGUAGE",
     "SanitizeOnShutdown": {
       "Cache": true,
       "Cookies": true,

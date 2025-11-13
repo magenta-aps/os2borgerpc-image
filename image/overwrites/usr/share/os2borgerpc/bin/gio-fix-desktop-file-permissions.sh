@@ -12,14 +12,14 @@ runuser -u user xdg-user-dirs-update
 DESKTOP=$(runuser -u $USERNAME xdg-user-dir DESKTOP)
 
 # Gio expects the user to own the file so temporarily change that
-for FILE in $DESKTOP/*.desktop; do
+for FILE in "$DESKTOP"/*.desktop; do
   chown $USERNAME:$USERNAME $FILE
 done
 
 su --login user --command $GIO_SCRIPT
 
 # Now set the permissions back to their restricted form
-for FILE in $DESKTOP/*.desktop; do
+for FILE in "$DESKTOP"/*.desktop; do
   chown root:$USERNAME "$FILE"
   # In order for gio changes to take effect, it is necessary to update the file time stamp
   # This can be done with many commands such as chmod or simply touch

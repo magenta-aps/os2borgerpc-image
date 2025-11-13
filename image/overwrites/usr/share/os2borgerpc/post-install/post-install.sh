@@ -125,7 +125,7 @@ systemctl enable "$(basename $UNATTENDED_UPGRADES_DELAY_SERVICE)"
 # libfprint-2-2 because it fails during installation/updating because of an unmet interactive step, but we don't need finger print reading anyway so we can delete it
 # apport and whoopsie because error reporting popping up is distracting on public pcs
 # ...and the rest because they likely aren't needed by users
-apt-get remove --assume-yes --purge deja-dup kdeconnect remmina transmission-gtk apport evince libfprint-2-2 nautilus-extension-gnome-terminal nautilus-sendto openvpn whoopsie
+apt-get remove --assume-yes --purge deja-dup kdeconnect remmina thunderbird transmission-gtk apport evince libfprint-2-2 nautilus-extension-gnome-terminal nautilus-sendto openvpn whoopsie
 apt-get autoremove
 apt-get clean
 
