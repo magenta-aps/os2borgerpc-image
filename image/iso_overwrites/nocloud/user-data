@@ -28,4 +28,5 @@ autoinstall:
     search_drivers: false
   shutdown: reboot
   late-commands:
+    - cp --recursive /cdrom/custom_scripts/ /target/usr/share/os2borgerpc/post_install/
     - curtin in-target -- /usr/share/os2borgerpc/post-install/post-install.sh

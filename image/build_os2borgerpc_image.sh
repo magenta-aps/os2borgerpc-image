@@ -113,6 +113,8 @@ printf $(sudo du --summarize --one-file-system --block-size=1 squashfs-root | cu
 
 # Overwrite preseed etc.
 cp --recursive iso_overwrites/* iso/
+# Create directory for custom scripts
+mkdir iso/custom_scripts
 # Add the version number to grub.cfg
 sed --in-place "s/VERSION/$(cat ../VERSION)/" iso/boot/grub/grub.cfg
 # Make a few changes to the preseeding if we're building an image with multi-language-support

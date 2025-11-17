@@ -144,5 +144,11 @@ DisallowTCP=true
 [debug]
 EOF
 
+# Run any added custom scripts
+CUSTOM_SCRIPTS=$(find /usr/share/os2borgerpc/post-install/custom_scripts/ -maxdepth 1 -iname "*.sh")
+for FILE in $CUSTOM_SCRIPTS; do
+  ./"$FILE"
+done
+
 # Cleanup the files used for post-install
 rm --recursive /etc/os2borgerpc/*.deb /usr/share/os2borgerpc/bin/grub_set_password.py $DIR/
