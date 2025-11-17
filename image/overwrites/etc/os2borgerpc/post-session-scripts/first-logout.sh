@@ -15,7 +15,7 @@ systemctl restart rsyslog.service
 LOCALE=$(grep LANG /etc/default/locale | cut --delimiter '=' --fields 2 | tr --delete '"' | cut --delimiter '_' --fields 1)
 if [ "$LOCALE" != "da" ] && [ "$LOCALE" != "sv" ]; then
   FIREFOX_POLICY_FILE="/etc/firefox/policies/policies.json"
-  sed --in-place "/RequestedLocales/d" $FIREFOX_POLICY_FILE
+  sed --in-place "s/\"RequestedLocales\":.*/\"RequestedLocales\": \"$LOCALE\"," $FIREFOX_POLICY_FILE
 fi
 if [ "$LOCALE" = "en" ]; then
     usermod --comment 'Citizen' user
