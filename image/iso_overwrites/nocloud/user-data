@@ -29,4 +29,5 @@ autoinstall:
   shutdown: reboot
   late-commands:
     - cp --recursive /cdrom/custom_scripts/ /target/usr/share/os2borgerpc/post_install/
+    - cp /cdrom/automatic_registration_config /target/etc/os2borgerpc/
     - curtin in-target -- /usr/share/os2borgerpc/post-install/post-install.sh

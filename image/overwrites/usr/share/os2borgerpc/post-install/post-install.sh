@@ -120,6 +120,25 @@ EOF
 
 systemctl enable "$(basename $UNATTENDED_UPGRADES_DELAY_SERVICE)"
 
+# Setup service to run automatic_registration.sh
+AUTOMATIC_REGISTRATION_SERVICE="/etc/systemd/system/os2borgerpc-automatic_registration.service"
+AUTOMATIC_REGISTRATION_SCRIPT="/usr/share/os2borgerpc/bin/automatic_registration.sh"
+cat << EOF > $AUTOMATIC_REGISTRATION_SERVICE
+[Unit]
+Description=OS2borgerPC automatic registration service
+
+[Service]
+Type=simple
+ExecStart=$AUTOMATIC_REGISTRATION_SCRIPT
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+chmod 700 $AUTOMATIC_REGISTRATION_SCRIPT
+
+systemctl enable "$(basename $AUTOMATIC_REGISTRATION_SERVICE)"
+
 # We remove the following programs here, because they're either not installed during prepare_os2borgerpc(?!)
 # so we can't remove them there or removing them earlier causes apt to complain about "missing file list files"
 # libfprint-2-2 because it fails during installation/updating because of an unmet interactive step, but we don't need finger print reading anyway so we can delete it
