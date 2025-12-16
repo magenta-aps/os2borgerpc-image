@@ -11,6 +11,9 @@ autoinstall:
     primary:
     - arches: [default]
       uri: http://dk.archive.ubuntu.com/ubuntu
+  storage:
+    layout:
+      name: direct
   identity:
     hostname: os2borgerpc
     username: superuser

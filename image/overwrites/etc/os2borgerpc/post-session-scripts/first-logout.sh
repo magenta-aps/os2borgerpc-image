@@ -10,7 +10,8 @@ snap remove thunderbird
 systemctl restart rsyslog.service
 
 # Detect the locale chosen under the installation and rename "Borger" if not Danish
-# Also reset Firefox language to english if the locale is not Danish or Swedish
+# Also change Firefox language to the chosen language if the locale is not
+# Danish or Swedish (in which case it was done during image building)
 # Locale file may or may not contain " around the value of LANG
 LOCALE=$(grep LANG /etc/default/locale | cut --delimiter '=' --fields 2 | tr --delete '"' | cut --delimiter '_' --fields 1)
 if [ "$LOCALE" != "da" ] && [ "$LOCALE" != "sv" ]; then
@@ -20,6 +21,9 @@ fi
 if [ "$LOCALE" = "en" ]; then
     usermod --comment 'Citizen' user
 fi
+
+# Remove the post-install folder that the post-install script can't remove for some reason
+rm --force --recursive "/usr/share/os2borgerpc/post-install/"
 
 # We want superuser to be hidden on the login screen after the first login
 # The relevant file also does not exist until you've logged in as superuser
