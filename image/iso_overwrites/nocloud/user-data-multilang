@@ -29,7 +29,7 @@ autoinstall:
     search_drivers: false
   shutdown: reboot
   late-commands:
-    - cp --recursive /cdrom/custom_scripts/ /target/usr/share/os2borgerpc/post_install/
+    - cp --recursive /cdrom/custom_scripts/ /target/usr/share/os2borgerpc/post-install/
     - cp /cdrom/automatic_registration_config /target/etc/os2borgerpc/
     - curtin in-target -- /usr/share/os2borgerpc/post-install/post-install.sh
     - curtin in-target -- /usr/sbin/usermod --comment 'Medborgare' user

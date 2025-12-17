@@ -97,7 +97,6 @@ EOF
 if [ "$PDF_READER_TO_SWITCH_TO" = "okular" ]; then
 
   apt-get install --assume-yes okular
-  apt-get remove --assume-yes evince  # Unfortunately removing evince alone does not mean Okular becomes default. Instead, LibreOffice Draw becomes default.
   set_default_pdf_reader "$PDF_READER_TO_SWITCH_TO"
 
 	cat <<- EOF > $OKULAR_CONFIG_1

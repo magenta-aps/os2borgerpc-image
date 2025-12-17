@@ -92,9 +92,9 @@ set_os2borgerpc_config os2borgerpc_version "$VERSION"
 # Remove Bluetooth indicator applet from Borger user
 systemctl disable --now bluetooth.service
 
-# Download the dbus-x11 .deb file to a known folder
+# Download the dbus-x11 and libllvm19 .deb files to a known folder
 cd /etc/os2borgerpc/
-apt download dbus-x11
+apt download dbus-x11 libllvm19
 cd -
 
 # Prevent future upgrade notifications
