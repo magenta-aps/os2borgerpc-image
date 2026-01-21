@@ -4,6 +4,7 @@ AUTOMATIC_REGISTRATION_CONFIG="/etc/os2borgerpc/automatic_registration_config"
 ADMIN_URL_FILE="/etc/os2borgerpc/admin-url"
 AUTOMATIC_REGISTRATION_SERVICE="/etc/systemd/system/os2borgerpc-automatic_registration.service"
 
+# xargs is used to remove possible spaces around the values
 SITE_UID=$(grep "site_uid" "$AUTOMATIC_REGISTRATION_CONFIG" | cut --delimiter ":" --fields 2 | xargs)
 PC_NAME=$(grep "pc_name" "$AUTOMATIC_REGISTRATION_CONFIG" | cut --delimiter ":" --fields 2 | xargs)
 
@@ -12,6 +13,18 @@ if [ -z "$SITE_UID" ] || [ -z "$PC_NAME" ]; then
   systemctl disable "$(basename $AUTOMATIC_REGISTRATION_SERVICE)"
   rm --force "$0" $AUTOMATIC_REGISTRATION_CONFIG $AUTOMATIC_REGISTRATION_SERVICE
 else
+  # If the option is selected, attempt to read serial number for use as PC name
+  if [ "$PC_NAME" = "serial_number" ]; then
+    PC_NAME=$(dmidecode --type system | grep "Serial" | cut --delimiter ":" --fields 2 | xargs)
+  fi
+  # Make sure that the PC name is a valid hostname
+  if ! [[ "$PC_NAME" =~ ^[0-9a-zA-Z][0-9a-zA-Z-]{1-40}$ ]]; then
+    # The PC name used for automatic registration is not a valid hostname
+    # so we cancel automatic registration and delete the related files
+    systemctl disable "$(basename $AUTOMATIC_REGISTRATION_SERVICE)"
+    rm --force "$0" $AUTOMATIC_REGISTRATION_CONFIG $AUTOMATIC_REGISTRATION_SERVICE
+    exit 1
+  fi
   # Set hostname
   NEW_HOSTNAME=$(echo "$PC_NAME" | tr '[:upper:]' '[:lower:]')
   set_os2borgerpc_config hostname "$NEW_HOSTNAME"
