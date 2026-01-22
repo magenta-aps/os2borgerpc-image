@@ -155,6 +155,9 @@ fi
 # Hide libreoffice tip of the day
 "$SCRIPT_DIR/os2borgerpc/libreoffice/overwrite_libreoffice_config.sh" True False
 
+# Make firefox start maximized
+"$SCRIPT_DIR/os2borgerpc/browser/firefox_start_maximized.sh" True
+
 # Remove cloned script repository
 rm --recursive "$SCRIPT_DIR"
 apt-get remove --assume-yes git

@@ -62,9 +62,9 @@ if [ -n "$ADDITIONAL_PAGES" ]; then
 fi
 
 if [ "$LANG_ALL" = "true" ]; then
-  INITIAL_LANGUAGE="sv_SE"
+  INITIAL_LANGUAGE="sv"
 else
-  INITIAL_LANGUAGE="da_DK"
+  INITIAL_LANGUAGE="da"
 fi
 
 cat << EOF > "$POLICY_FILE"

@@ -166,7 +166,8 @@ EOF
 # Run any added custom scripts
 CUSTOM_SCRIPTS=$(find /usr/share/os2borgerpc/post-install/custom_scripts/ -maxdepth 1 -regex ".*\.sh\|.*\.py")
 for FILE in $CUSTOM_SCRIPTS; do
-  ./"$FILE"
+  sed --in-place "s/\r//" "$FILE"
+  "$FILE"
 done
 
 # Cleanup the files used for post-install
