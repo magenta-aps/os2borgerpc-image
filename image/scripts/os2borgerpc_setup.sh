@@ -93,6 +93,11 @@ set_os2borgerpc_config os2borgerpc_version "$VERSION"
 systemctl disable --now bluetooth.service
 
 # Download the dbus-x11 and libllvm19 .deb files to a known folder
+# We need dbus-x11 to activate desktop shortcuts and libllvm19 is
+# included to stop apt from complaining about "missing file list files"
+# Installing/removing these packages during image building does not work
+# so we do this instead.
+# The packages are later installed from the .deb files by post-install.sh
 cd /etc/os2borgerpc/
 apt download dbus-x11 libllvm19
 cd -
