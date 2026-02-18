@@ -13,5 +13,4 @@ build_os2borgerpc_image.sh
   -> /mnt/image/scripts/os2borgerpc_setup.sh
     -> scripts/do_overwrite.sh
     -> scripts/install_dependencies.sh
-  -> /mnt/image/scripts/finalize.sh
 -> build/chroot_os2borgerpc.sh squashfs-root build/create_manifest.sh > iso/casper/filesystem.manifest

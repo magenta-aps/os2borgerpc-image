@@ -28,13 +28,6 @@ export DEBIAN_FRONTEND=noninteractive
 
 apt-get update
 
-# Setup superuser. This is done before do_overwrite, as that currently copies in some files into superusers home dir.
-# The group lpadmin allows superuser to manage CUPS / change printer settings (and make changes via CUPS' web interface)
-# shellcheck disable=SC2016 # It may look like it's a bash variable, but it's not
-useradd superuser --create-home --shell /bin/bash \
-  --password '$6$/c6Zcifihma/P9NL$MJfwhzrFAcQ0Wq992Wc8XvQ.4mb0aPHK7sUyvRMyicghNmfe7zbvwb5j2AI5AEZq3OfVQRQDbGfzgjrxSfKbp1' \
-  --user-group --key UMASK=0077  --groups sudo,lpadmin --comment Superuser
-
 # Overwrite file tree
 "$DIR/do_overwrite.sh"
 
@@ -49,37 +42,14 @@ for program in $PROGRAMS; do
   chmod a-rwx "$PTH/$program"
 done
 
-# Adding this group here as we need it when adding the user
-groupadd nopasswdlogin
-
 # Install all necessary packages and dependencies
 "$DIR/install_dependencies.sh"
-
-# Setup default user
-useradd user --create-home --password 12345 --shell /bin/bash --user-group --groups nopasswdlogin --comment Borger
 
 # Ensure the correct, restrictive permissions on this client directory
 chmod 700 /var/lib/os2borgerpc
 
 # Prepare for security scripts
 mkdir --parents /etc/os2borgerpc/security/
-
-# Enable autologin to superuser during the install.
-# Just the default config with comments removed and autologin enabled, as otherwise the installer itself starts on the login screen
-# It's then overwritten via a late command, at the end of the installation
-cat << EOF > /etc/gdm3/custom.conf
-[daemon]
-AutomaticLoginEnable = true
-AutomaticLogin = superuser
-
-[security]
-
-[xdmcp]
-
-[chooser]
-
-[debug]
-EOF
 
 # Set product in configuration
 PRODUCT="os2borgerpc"
@@ -104,15 +74,6 @@ cd -
 
 # Prevent future upgrade notifications
 sed --in-place "s/Prompt=.*/Prompt=never/" /etc/update-manager/release-upgrades
-
-# Remove user access to settings. This also hides settings from user
-PROGRAM_PATH="/usr/bin/gnome-control-center"
-dpkg-statoverride --update --add superuser root 770 "$PROGRAM_PATH" || true
-
-# Remove user access to terminal
-PROGRAM_PATH="/usr/bin/gnome-terminal"
-dpkg-statoverride --update --add root superuser 750 "$PROGRAM_PATH" || true
-dpkg-statoverride --update --add root superuser 750 "$PROGRAM_PATH.real" || true
 
 printf "\n\n%s\n\n" "=== About to run assorted OS2borgerPC scripts ==="
 
@@ -168,3 +129,6 @@ rm --recursive "$SCRIPT_DIR"
 apt-get remove --assume-yes git
 
 printf "\n\n%s\n\n" "=== Finished running assorted OS2borgerPC scripts ==="
+
+# Enable FSCK automatic fixes
+sed --in-place "s/FSCKFIX=no/FSCKFIX=yes/" /lib/init/vars.sh
