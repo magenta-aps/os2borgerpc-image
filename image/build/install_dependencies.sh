@@ -5,31 +5,25 @@ printf "\n\n%s\n\n" "===== RUNNING: $0 ====="
 # Find current directory
 
 export DEBIAN_FRONTEND=noninteractive
-DEPENDENCIES=( squashfs-tools genisoimage p7zip-full xorriso figlet )
+DEPENDENCIES="squashfs-tools genisoimage p7zip-full xorriso figlet"
 
-PKGSTOINSTALL=""
+PKGS_TO_INSTALL=""
 
 dpkg -l | grep "^ii" > /tmp/build_installed_packages_list.txt
 
-for  package in "${DEPENDENCIES[@]}"
-do
-    grep -w "ii  $package " /tmp/build_installed_packages_list.txt > /dev/null
-    if [[ $? -ne 0 ]]; then
-        PKGSTOINSTALL=$PKGSTOINSTALL" "$package
+for package in $DEPENDENCIES; do
+    if ! grep --quiet -w "ii  $package " /tmp/build_installed_packages_list.txt; then
+        PKGS_TO_INSTALL="$PKGS_TO_INSTALL $package"
     fi
 done
 
-if [ "$PKGSTOINSTALL" != "" ]; then
+if [ "$PKGS_TO_INSTALL" != "" ]; then
     echo  -n "Some build dependencies are missing on the host system."
     echo " The following packages will be installed: $PKGSTOINSTALL"
-    sudo apt-get update > /dev/null
-    sudo apt-get -y install $PKGSTOINSTALL
-    RETVAL=$?
-    if [ $RETVAL -ne 0 ]; then
-        echo "" 1>&2
-        echo "ERROR: Installation of dependencies failed." 1>&2
-        echo "Please note that \"universe\" repository MUST be enabled" 1>&2
-        echo "" 1>&2
+
+    sudo apt-get update --quiet
+    # shellcheck disable=SC2086 # We want word-splitting here
+    if ! apt-get install --assume-yes $PKGS_TO_INSTALL; then
         exit 1
     fi
 fi

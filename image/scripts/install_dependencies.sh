@@ -4,13 +4,8 @@ set -x
 
 printf "\n\n%s\n\n" "Installing dependencies"
 
-# Find current directory
-
-DIR=$(dirname "${BASH_SOURCE[0]}")
-
-# The DEPENDENCIES file contains packages/programs
-# required by OS2borgerPC.
-DEPENDENCIES=( $(cat "$DIR/DEPENDENCIES") )
+# The DEPENDENCIES file contains packages/programs required by OS2borgerPC.
+DEPENDENCIES="pulseaudio-utils pwgen pipx"
 
 if [ "$LANG_ALL" = "true" ]; then
   # Add support for specific languages besides those preinstalled
@@ -20,35 +15,10 @@ else
   LN="da"
 fi
 
-dpkg --list | grep "^ii" > /tmp/scripts_installed_packages_list.txt
-
-for package in "${DEPENDENCIES[@]}"
-do
-    grep --word-regexp "ii  $package " /tmp/scripts_installed_packages_list.txt > /dev/null
-    if [[ $? -ne 0 ]]; then
-        PKGS_TO_INSTALL=$PKGS_TO_INSTALL" "$package
-    fi
-done
-
-
-if [ "$PKGS_TO_INSTALL" != "" ]; then
-    echo  -n "Some dependencies are missing."
-    echo " The following packages will be installed: $PKGS_TO_INSTALL"
-
-    # Step 2: Do the actual installation. Abort if it fails.
-    # and install
-    # shellcheck disable=SC2086 # We want word-splitting here
-    apt-get --assume-yes install $PKGS_TO_INSTALL | tee /tmp/os2borgerpc_install_log.txt
-    RETVAL=$?
-    if [ $RETVAL -ne 0 ]; then
-        echo "" 1>&2
-        echo "ERROR: Installation of dependencies failed." 1>&2
-        echo "Please note that \"universe\" repository MUST be enabled" 1>&2
-        echo "" 1>&2
-        exit 1
-    fi
-else
-    echo "No dependencies missing...?"
+# shellcheck disable=SC2086 # We want word-splitting here
+if ! apt-get install $DEPENDENCIES; then
+  printf "%s\n" "ERROR: Installation of dependencies failed." 1>&2
+  exit 1
 fi
 
 echo "Install any missing language support packages for the missing target languages specifically"
