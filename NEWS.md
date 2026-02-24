@@ -1,3 +1,18 @@
+## Version 6.1.0, February 24, 2026
+
+New in this version:
+
+- Upgraded to Ubuntu 24.04.4
+- Add support for automatic registration
+- Add support for running custom scripts at the end of the installation
+- Fully block user access to terminal
+- Correctly install language support for LibreOffice
+- Corerctly configure default pdf reader settings
+- Set Firefox language to chosen language
+- Make Firefox start maximized by default
+- Ensure that input is shown during manual registration
+- Slightly simplify build process
+
 ## Version 6.0.0, May 5, 2025
 
 New in this version:
@@ -39,7 +54,7 @@ New in this version:
 
 New in this version:
 
-- A new international image released separaretely.
+- A new international image released separately.
   In future versions they'll be released simultaneously, with the same
   version numbers.
 
