@@ -10,4 +10,7 @@ if ! grep --quiet "_os_name" "/etc/os2borgerpc/os2borgerpc.conf"; then
   pipx upgrade os2borgerpc-client &> /dev/null
 fi
 
+# Ensure that input is shown during registration
+stty echo
+
 /usr/local/bin/register_new_os2borgerpc_client.sh

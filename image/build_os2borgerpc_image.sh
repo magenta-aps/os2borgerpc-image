@@ -67,7 +67,7 @@ if [ "$CLEAN_BUILD" ]
 then
     # In case it was cancelled prematurely and /tmp is still bind-mounted to squashfs-root/tmp
     unmount_cleanup
-    sudo rm --recursive --force iso/.disk/ iso/* squashfs squashfs-root/ /tmp/build_installed_packages_list.txt /tmp/scripts_installed_packages_list.txt /tmp/os2borgerpc_install_log.txt /tmp/os2borgerpc_upgrade_log.txt boot_hybrid.img ubuntu22-desktop-amd64.efi
+    sudo rm --recursive --force iso/.disk/ iso/* squashfs squashfs-root/ /tmp/build_installed_packages_list.txt /tmp/scripts_installed_packages_list.txt /tmp/os2borgerpc_install_log.txt /tmp/os2borgerpc_upgrade_log.txt boot_hybrid.img ubuntu-desktop-amd64.efi
 fi
 
 if [ ! "$SKIP_BUILD_DEPS" ]
@@ -113,6 +113,8 @@ printf $(sudo du --summarize --one-file-system --block-size=1 squashfs-root | cu
 
 # Overwrite preseed etc.
 cp --recursive iso_overwrites/* iso/
+# Create directory for custom scripts
+mkdir iso/custom_scripts
 # Add the version number to grub.cfg
 sed --in-place "s/VERSION/$(cat ../VERSION)/" iso/boot/grub/grub.cfg
 # Make a few changes to the preseeding if we're building an image with multi-language-support
@@ -138,7 +140,7 @@ unmount_cleanup
 
 mbr="boot_hybrid.img"
 
-efi="ubuntu22-desktop-amd64.efi"
+efi="ubuntu-desktop-amd64.efi"
 
 # Extract the MBR template
 

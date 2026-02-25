@@ -18,6 +18,27 @@ dpkg -i /etc/os2borgerpc/*.deb
 # Secure GRUB as GRUB should now be fully installed, unlike at the time the image is being created
 /usr/share/os2borgerpc/bin/grub_set_password.py "$(pwgen -N 1 -s 12)"
 
+# Remove user access to settings. This also hides settings from user
+PROGRAM_PATH="/usr/bin/gnome-control-center"
+dpkg-statoverride --update --add superuser root 770 "$PROGRAM_PATH" || true
+
+# Remove user access to terminal
+PROGRAM_PATH="/usr/bin/gnome-terminal"
+dpkg-statoverride --update --add root superuser 750 "$PROGRAM_PATH" || true
+dpkg-statoverride --update --add root superuser 750 "$PROGRAM_PATH.real" || true
+
+# Adding this group here as we need it when adding the user
+groupadd nopasswdlogin
+
+# Setup default user
+useradd user --create-home --password 12345 --shell /bin/bash --user-group --groups nopasswdlogin --comment Borger
+
+# Transfer relevant files to /home/superuser
+# and delete the temporary directory
+rsync -az /home/superuser_dir/ /home/superuser/
+rm --force --recursive /home/superuser_dir/
+chown --recursive superuser:superuser /home/superuser/
+
 # For some reason, Ubuntu 24 does not keep the language packages installed during image building
 # even though we mark them as manually installed. As a result, we install them from local .deb-files
 # earlier in this script. The lack of installed language packages during the actual installation also
@@ -40,6 +61,24 @@ ln --symbolic /etc/locale.conf /etc/default/locale
 # Setup passwdless login of user
 PAM_GDM=/etc/pam.d/gdm-password
 sed -i "/include common-auth/i auth sufficient pam_succeed_if.so user ingroup nopasswdlogin" $PAM_GDM
+
+# Setup service to run user-cleanup on system startup or shutdown
+OS2BORGERPC_CLEANUP_SERVICE="/etc/systemd/system/os2borgerpc-cleanup.service"
+cat << EOF > $OS2BORGERPC_CLEANUP_SERVICE
+[Unit]
+Description=OS2borgerPC user directory cleanup
+
+[Service]
+Type=oneshot
+ExecStart=/usr/share/os2borgerpc/bin/user-cleanup.bash
+RemainAfterExit=yes
+ExecStop=/usr/share/os2borgerpc/bin/user-cleanup.bash
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl enable "$(basename $OS2BORGERPC_CLEANUP_SERVICE)"
 
 # Setup service to run first-logout script on shutdown or reboot
 FIRST_LOGOUT_SCRIPT="/etc/os2borgerpc/post-session-scripts/first-logout.sh"
@@ -120,12 +159,31 @@ EOF
 
 systemctl enable "$(basename $UNATTENDED_UPGRADES_DELAY_SERVICE)"
 
+# Setup service to run automatic_registration.sh
+AUTOMATIC_REGISTRATION_SERVICE="/etc/systemd/system/os2borgerpc-automatic_registration.service"
+AUTOMATIC_REGISTRATION_SCRIPT="/usr/share/os2borgerpc/bin/automatic_registration.sh"
+cat << EOF > $AUTOMATIC_REGISTRATION_SERVICE
+[Unit]
+Description=OS2borgerPC automatic registration service
+
+[Service]
+Type=simple
+ExecStart=$AUTOMATIC_REGISTRATION_SCRIPT
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+chmod 700 $AUTOMATIC_REGISTRATION_SCRIPT
+
+systemctl enable "$(basename $AUTOMATIC_REGISTRATION_SERVICE)"
+
 # We remove the following programs here, because they're either not installed during prepare_os2borgerpc(?!)
 # so we can't remove them there or removing them earlier causes apt to complain about "missing file list files"
 # libfprint-2-2 because it fails during installation/updating because of an unmet interactive step, but we don't need finger print reading anyway so we can delete it
 # apport and whoopsie because error reporting popping up is distracting on public pcs
 # ...and the rest because they likely aren't needed by users
-apt-get remove --assume-yes --purge deja-dup kdeconnect remmina transmission-gtk apport evince libfprint-2-2 nautilus-extension-gnome-terminal nautilus-sendto openvpn whoopsie
+apt-get remove --assume-yes --purge deja-dup kdeconnect remmina thunderbird transmission-gtk apport evince libfprint-2-2 nautilus-extension-gnome-terminal nautilus-sendto openvpn whoopsie
 apt-get autoremove
 apt-get clean
 
@@ -144,5 +202,12 @@ DisallowTCP=true
 [debug]
 EOF
 
+# Run any added custom scripts
+CUSTOM_SCRIPTS=$(find /usr/share/os2borgerpc/post-install/custom_scripts/ -maxdepth 1 -regex ".*\.sh\|.*\.py")
+for FILE in $CUSTOM_SCRIPTS; do
+  sed --in-place "s/\r//" "$FILE"
+  "$FILE"
+done
+
 # Cleanup the files used for post-install
-rm /etc/os2borgerpc/*.deb /usr/share/os2borgerpc/bin/grub_set_password.py $DIR/files/Default
+rm --recursive /etc/os2borgerpc/*.deb /usr/share/os2borgerpc/bin/grub_set_password.py $DIR/

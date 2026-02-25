@@ -10,8 +10,14 @@ snap remove thunderbird
 systemctl restart rsyslog.service
 
 # Detect the locale chosen under the installation and rename "Borger" if not Danish
+# Also change Firefox language to the chosen language if the locale is not
+# Danish or Swedish (in which case it was done during image building)
 # Locale file may or may not contain " around the value of LANG
-LOCALE=$(grep LANG /etc/default/locale | cut --delimiter '=' --fields 2 | tr --delete '"' | cut --delimiter '_' --fields 1)
+LOCALE=$(grep LANG= /etc/default/locale | cut --delimiter '=' --fields 2 | tr --delete '"' | cut --delimiter '_' --fields 1)
+if [ "$LOCALE" != "da" ] && [ "$LOCALE" != "sv" ]; then
+  FIREFOX_POLICY_FILE="/etc/firefox/policies/policies.json"
+  sed --in-place "s/\"RequestedLocales\":.*/\"RequestedLocales\": \"$LOCALE\"," $FIREFOX_POLICY_FILE
+fi
 if [ "$LOCALE" = "en" ]; then
     usermod --comment 'Citizen' user
 fi

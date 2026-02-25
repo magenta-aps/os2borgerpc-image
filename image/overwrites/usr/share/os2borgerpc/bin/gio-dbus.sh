@@ -9,7 +9,7 @@ DBUS_PROCESS=$$
 # which already makes sure that /home/user/.config/user-dirs.dirs exists
 DESKTOP=$(xdg-user-dir DESKTOP)
 
-for FILE in $DESKTOP/*.desktop; do
+for FILE in "$DESKTOP"/*.desktop; do
   gio set "$FILE" metadata::trusted true
 done
 

@@ -49,9 +49,9 @@ if grep --no-ignore-case "No such file or directory" $SETUP_LOG; then
        Exiting."
   exit 1
 fi
+# Remove the setup log
+rm $SETUP_LOG
 
 # Ideally at this point nothing else within the image is installed/uninstalled, so we can clean up old package versions etc.
 apt-get --assume-yes autoremove --purge
 apt-get --assume-yes clean
-
-/mnt/image/scripts/finalize.sh || exit 1

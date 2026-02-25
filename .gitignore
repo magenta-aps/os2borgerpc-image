@@ -2,6 +2,6 @@
 image/squashfs-root
 image/*.iso
 boot_hybrid.img
-ubuntu22-desktop-amd64.efi
+ubuntu-desktop-amd64.efi
 image/iso
 .idea

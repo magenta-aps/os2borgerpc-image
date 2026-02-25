@@ -14,6 +14,9 @@ autoinstall:
     primary:
     - arches: [default]
       uri: http://se.archive.ubuntu.com/ubuntu
+  storage:
+    layout:
+      name: direct
   identity:
     hostname: os2borgerpc
     username: superuser
@@ -26,6 +29,8 @@ autoinstall:
     search_drivers: false
   shutdown: reboot
   late-commands:
+    - cp --recursive /cdrom/custom_scripts/ /target/usr/share/os2borgerpc/post-install/
+    - cp /cdrom/automatic_registration_config /target/etc/os2borgerpc/
     - curtin in-target -- /usr/share/os2borgerpc/post-install/post-install.sh
     - curtin in-target -- /usr/sbin/usermod --comment 'Medborgare' user
     - echo 'LANG=sv_SE.UTF-8' > /target/etc/locale.conf

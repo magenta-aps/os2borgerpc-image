@@ -5,7 +5,7 @@
 post_session_scripts=$(find /etc/os2borgerpc/post-session-scripts -mindepth 1)
 for file in $post_session_scripts
 do
-  ./"$file" &
+  "$file" &
 done
 
 exit 0

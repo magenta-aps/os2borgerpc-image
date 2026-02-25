@@ -13,13 +13,11 @@ DIR=$(dirname "${BASH_SOURCE[0]}")
 DEPENDENCIES=( $(cat "$DIR/DEPENDENCIES") )
 
 if [ "$LANG_ALL" = "true" ]; then
-    # Add support for specific languages besides those preinstalled
+  # Add support for specific languages besides those preinstalled
   LN="sv"
-  DEPENDENCIES+=(language-pack-"$LN")
 else
   # The current default: Only add support for Danish
   LN="da"
-  DEPENDENCIES+=(language-pack-"$LN")
 fi
 
 dpkg --list | grep "^ii" > /tmp/scripts_installed_packages_list.txt
@@ -63,13 +61,14 @@ apt-mark manual $(check-language-support -l $LN --show-installed) $(check-langua
 # Download the language support packages to a known folder because the Ubuntu 24.04 installer seems to get rid of
 # some of them even if they're marked as explicitly installed
 cd /etc/os2borgerpc
-apt download $(check-language-support -l $LN --show-installed) $(check-language-support -l en --show-installed) language-pack-$LN-base language-pack-en-base language-pack-gnome-$LN-base language-pack-gnome-en-base
+apt download $(check-language-support -l $LN --show-installed) $(check-language-support -l en --show-installed) language-pack-$LN-base language-pack-en-base language-pack-gnome-$LN-base language-pack-gnome-en-base hyphen-$LN libreoffice-help-$LN libreoffice-l10n-$LN mythes-$LN
 cd -
 
 # Necessary pipx setup
-pipx ensurepath
 echo 'PIPX_BIN_DIR="/usr/local/bin"' >> /etc/environment
 
 # Even though we've added PIPX_BIN_DIR to /etc/environment, we still set it here
 # because changes to /etc/environment do not take effect until the session is reloaded
-PIPX_BIN_DIR="/usr/local/bin" pipx install os2borgerpc-client
+# We fix the version of chardet to prevent a dependency warning from requests
+# Check if this is still necessary during next image build
+PIPX_BIN_DIR="/usr/local/bin" pipx install os2borgerpc-client --pip-args "chardet<6.0"

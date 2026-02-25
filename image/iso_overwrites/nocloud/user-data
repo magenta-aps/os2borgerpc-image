@@ -11,6 +11,9 @@ autoinstall:
     primary:
     - arches: [default]
       uri: http://dk.archive.ubuntu.com/ubuntu
+  storage:
+    layout:
+      name: direct
   identity:
     hostname: os2borgerpc
     username: superuser
@@ -28,4 +31,6 @@ autoinstall:
     search_drivers: false
   shutdown: reboot
   late-commands:
+    - cp --recursive /cdrom/custom_scripts/ /target/usr/share/os2borgerpc/post-install/
+    - cp /cdrom/automatic_registration_config /target/etc/os2borgerpc/
     - curtin in-target -- /usr/share/os2borgerpc/post-install/post-install.sh

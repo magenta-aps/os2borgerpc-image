@@ -8,7 +8,6 @@ cp --recursive "$DIR"/../overwrites/* /
 
 # Permissions fixup
 chmod 0400 "/home/.skjult/.local/share/keyrings/Standardnøglering.keyring"
-chown --recursive superuser:superuser /home/superuser
 # Set more restrictive permissions on some system files
 chmod 0700 "/usr/share/os2borgerpc/bin/user-cleanup.bash"
 
