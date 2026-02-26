@@ -19,11 +19,11 @@ done
 
 if [ "$PKGS_TO_INSTALL" != "" ]; then
     echo  -n "Some build dependencies are missing on the host system."
-    echo " The following packages will be installed: $PKGSTOINSTALL"
+    echo " The following packages will be installed: $PKGS_TO_INSTALL"
 
     sudo apt-get update --quiet
     # shellcheck disable=SC2086 # We want word-splitting here
-    if ! apt-get install --assume-yes $PKGS_TO_INSTALL; then
+    if ! sudo apt-get install --assume-yes $PKGS_TO_INSTALL; then
         exit 1
     fi
 fi

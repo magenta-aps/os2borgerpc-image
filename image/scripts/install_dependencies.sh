@@ -16,7 +16,7 @@ else
 fi
 
 # shellcheck disable=SC2086 # We want word-splitting here
-if ! apt-get install $DEPENDENCIES; then
+if ! apt-get install --assume-yes $DEPENDENCIES; then
   printf "%s\n" "ERROR: Installation of dependencies failed." 1>&2
   exit 1
 fi
