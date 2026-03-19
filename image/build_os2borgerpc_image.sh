@@ -123,7 +123,7 @@ if [ "$LANG_ALL" = "true" ]; then
   rm iso/nocloud/user-data
   mv iso/nocloud/user-data-multilang iso/nocloud/user-data
   # Don't use the OS2-specific background image
-  rm iso/boot/grub/borgerpc_grub_bg.png
+  rm iso/boot/grub/grub_bg.png
   # TODO: Potentially remove in the future if converting to a truly language agnostic image: Hardcode ISO bootup text to Swedish
   sed --in-place "s/Install OS2borgerPC \([0-9\.]*\) from this medium/Installera Sambruk MedborgarPC \1 från detta medium/" iso/boot/grub/grub.cfg
 else
