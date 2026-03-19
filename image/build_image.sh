@@ -89,11 +89,11 @@ sudo rsync --recursive --exclude squashfs-root --exclude image/*.iso --exclude .
 
 figlet "About to enter chroot"
 
-build/chroot_os2borgerpc.sh squashfs-root ./build/prepare_os2borgerpc.sh "$LANG_ALL" "$SCRIPTS_CLONE_URL"
+build/chroot.sh squashfs-root ./build/prepare.sh "$LANG_ALL" "$SCRIPTS_CLONE_URL"
 
 
 # Regenerate manifest
-build/chroot_os2borgerpc.sh squashfs-root build/create_manifest.sh > iso/casper/filesystem.manifest
+build/chroot.sh squashfs-root build/create_manifest.sh > iso/casper/filesystem.manifest
 figlet "Exiting chroot"
 
 cp iso/casper/filesystem.manifest iso/casper/filesystem.manifest-desktop
