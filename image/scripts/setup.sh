@@ -112,7 +112,7 @@ mv "$SCRIPT_DIR/common/system/apt_periodic_control.sh" "/etc/os2borgerpc/"
 # Set background images on login screen and desktop
 # Multi user image uses a different image because the Danish one has Danish text on it
 if [ "$LANG_ALL" = "true" ]; then
-  BG="/usr/share/backgrounds/default_login.png"
+  BG="/usr/share/backgrounds/default_login.svg"
 else
   BG="/usr/share/backgrounds/default_desktop.svg"
 fi
