@@ -38,6 +38,7 @@ useradd user --create-home --password 12345 --shell /bin/bash --user-group --gro
 rsync -az /home/superuser_dir/ /home/superuser/
 rm --force --recursive /home/superuser_dir/
 chown --recursive superuser:superuser /home/superuser/
+chmod 750 /home/superuser/
 
 # For some reason, Ubuntu 24 does not keep the language packages installed during image building
 # even though we mark them as manually installed. As a result, we install them from local .deb-files
