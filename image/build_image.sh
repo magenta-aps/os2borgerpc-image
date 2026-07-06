@@ -89,11 +89,11 @@ sudo rsync --recursive --exclude squashfs-root --exclude image/*.iso --exclude .
 
 figlet "About to enter chroot"
 
-build/chroot_os2borgerpc.sh squashfs-root ./build/prepare_os2borgerpc.sh "$LANG_ALL" "$SCRIPTS_CLONE_URL"
+build/chroot.sh squashfs-root ./build/prepare.sh "$LANG_ALL" "$SCRIPTS_CLONE_URL"
 
 
 # Regenerate manifest
-build/chroot_os2borgerpc.sh squashfs-root build/create_manifest.sh > iso/casper/filesystem.manifest
+build/chroot.sh squashfs-root build/create_manifest.sh > iso/casper/filesystem.manifest
 figlet "Exiting chroot"
 
 cp iso/casper/filesystem.manifest iso/casper/filesystem.manifest-desktop
@@ -123,7 +123,7 @@ if [ "$LANG_ALL" = "true" ]; then
   rm iso/nocloud/user-data
   mv iso/nocloud/user-data-multilang iso/nocloud/user-data
   # Don't use the OS2-specific background image
-  rm iso/boot/grub/borgerpc_grub_bg.png
+  rm iso/boot/grub/grub_bg.png
   # TODO: Potentially remove in the future if converting to a truly language agnostic image: Hardcode ISO bootup text to Swedish
   sed --in-place "s/Install OS2borgerPC \([0-9\.]*\) from this medium/Installera Sambruk MedborgarPC \1 från detta medium/" iso/boot/grub/grub.cfg
 else

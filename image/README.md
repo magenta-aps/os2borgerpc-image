@@ -6,11 +6,11 @@ From earliest to latest.
 
 Relevant when determining where something should be inserted, and to know what has been done/exists at a given stage.
 
-build_os2borgerpc_image.sh
+build_image.sh
 -> build/install_dependencies.sh
 -> build/extract_iso.sh
--> build/chroot_os2borgerpc.sh squashfs-root ./build/prepare_os2borgerpc.sh
-  -> /mnt/image/scripts/os2borgerpc_setup.sh
+-> build/chroot.sh squashfs-root ./build/prepare.sh
+  -> /mnt/image/scripts/setup.sh
     -> scripts/do_overwrite.sh
     -> scripts/install_dependencies.sh
--> build/chroot_os2borgerpc.sh squashfs-root build/create_manifest.sh > iso/casper/filesystem.manifest
+-> build/chroot.sh squashfs-root build/create_manifest.sh > iso/casper/filesystem.manifest

@@ -1,3 +1,11 @@
+## Version 6.1.1, July 6, 2026
+
+New in this version:
+
+- Prevent potential apt issues related to libreoffice-help-common
+- Ensure that other users cannot access /home/superuser or /home/.skjult
+- Switch default login background from .png to .svg
+
 ## Version 6.1.0, February 24, 2026
 
 New in this version:
