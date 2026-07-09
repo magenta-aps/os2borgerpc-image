@@ -1,3 +1,9 @@
+## Version 6.2.0, July 7, 2026
+
+New in this version:
+
+- Use the automatic registration script from the client
+
 ## Version 6.1.1, July 6, 2026
 
 New in this version:

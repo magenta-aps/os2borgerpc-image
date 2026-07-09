@@ -39,6 +39,5 @@ echo 'PIPX_BIN_DIR="/usr/local/bin"' >> /etc/environment
 
 # Even though we've added PIPX_BIN_DIR to /etc/environment, we still set it here
 # because changes to /etc/environment do not take effect until the session is reloaded
-# We fix the version of chardet to prevent a dependency warning from requests
-# Check if this is still necessary during next image build
+# We fix the version of chardet because newer versions were rewritten using an LLM
 PIPX_BIN_DIR="/usr/local/bin" pipx install os2borgerpc-client --pip-args "chardet<6.0"
