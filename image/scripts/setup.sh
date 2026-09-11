@@ -43,7 +43,7 @@ for program in $PROGRAMS; do
 done
 
 # Install all necessary packages and dependencies
-"$DIR/install_dependencies.sh"
+"$DIR/install_image_dependencies.sh"
 
 # Ensure the correct, restrictive permissions on this client directory
 chmod 700 /var/lib/os2borgerpc

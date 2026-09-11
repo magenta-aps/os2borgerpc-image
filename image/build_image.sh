@@ -72,7 +72,7 @@ fi
 
 if [ ! "$SKIP_BUILD_DEPS" ]
 then
-    build/install_dependencies.sh > /dev/null
+    build/install_build_dependencies.sh > /dev/null
 fi
 
 build/extract_iso.sh "$ISO_PATH" iso
