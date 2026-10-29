@@ -67,12 +67,12 @@ if [ "$CLEAN_BUILD" ]
 then
     # In case it was cancelled prematurely and /tmp is still bind-mounted to squashfs-root/tmp
     unmount_cleanup
-    sudo rm --recursive --force iso/.disk/ iso/* squashfs squashfs-root/ /tmp/build_installed_packages_list.txt /tmp/scripts_installed_packages_list.txt /tmp/os2borgerpc_install_log.txt /tmp/os2borgerpc_upgrade_log.txt boot_hybrid.img ubuntu-desktop-amd64.efi
+    sudo rm --recursive --force iso/.disk/ iso/* squashfs squashfs-root/ /tmp/build_installed_packages_list.txt boot_hybrid.img ubuntu-desktop-amd64.efi
 fi
 
 if [ ! "$SKIP_BUILD_DEPS" ]
 then
-    build/install_dependencies.sh > /dev/null
+    build/install_build_dependencies.sh > /dev/null
 fi
 
 build/extract_iso.sh "$ISO_PATH" iso
@@ -122,8 +122,6 @@ if [ "$LANG_ALL" = "true" ]; then
   # Use the multilanguage preseed file
   rm iso/nocloud/user-data
   mv iso/nocloud/user-data-multilang iso/nocloud/user-data
-  # Don't use the OS2-specific background image
-  rm iso/boot/grub/grub_bg.png
   # TODO: Potentially remove in the future if converting to a truly language agnostic image: Hardcode ISO bootup text to Swedish
   sed --in-place "s/Install OS2borgerPC \([0-9\.]*\) from this medium/Installera Sambruk MedborgarPC \1 från detta medium/" iso/boot/grub/grub.cfg
 else

@@ -1,3 +1,11 @@
+## Version 6.3.0, October 27, 2026
+
+New in this version:
+
+- Upgraded to Ubuntu 24.04.5.1
+- Ensure that ca-certificates are updated
+- GRUB: Remove custom background image and change colors
+
 ## Version 6.2.0, July 7, 2026
 
 New in this version:

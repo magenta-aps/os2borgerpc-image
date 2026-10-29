@@ -43,7 +43,7 @@ for program in $PROGRAMS; do
 done
 
 # Install all necessary packages and dependencies
-"$DIR/install_dependencies.sh"
+"$DIR/install_image_dependencies.sh"
 
 # Ensure the correct, restrictive permissions on this client directory
 chmod 700 /var/lib/os2borgerpc
@@ -62,14 +62,15 @@ set_os2borgerpc_config os2borgerpc_version "$VERSION"
 # Remove Bluetooth indicator applet from Borger user
 systemctl disable --now bluetooth.service
 
-# Download the dbus-x11 and libllvm19 .deb files to a known folder
+# Download the ca-certificates, dbus-x11 and libllvm19 .deb files to a known folder
+# We need to ensure that ca-certificates is a version that fixes the emudhra incident
 # We need dbus-x11 to activate desktop shortcuts and libllvm19 is
 # included to stop apt from complaining about "missing file list files"
 # Installing/removing these packages during image building does not work
 # so we do this instead.
 # The packages are later installed from the .deb files by post-install.sh
 cd /etc/os2borgerpc/
-apt download dbus-x11 libllvm19
+apt download dbus-x11 libllvm19 ca-certificates
 cd -
 
 # Prevent future upgrade notifications

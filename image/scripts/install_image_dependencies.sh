@@ -4,8 +4,10 @@ set -x
 
 printf "\n\n%s\n\n" "Installing dependencies"
 
-# The DEPENDENCIES file contains packages/programs required by OS2borgerPC.
-DEPENDENCIES="pulseaudio-utils pwgen pipx"
+# The DEPENDENCIES string contains packages/programs required by OS2borgerPC.
+# ca-certificates is included to ensure that we have a version that fixes
+# the emudhra incident
+DEPENDENCIES="pulseaudio-utils pwgen pipx ca-certificates"
 
 if [ "$LANG_ALL" = "true" ]; then
   # Add support for specific languages besides those preinstalled
